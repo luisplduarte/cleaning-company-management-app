@@ -1,0 +1,73 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+model User {
+  id         String          @id @default(uuid())
+  name       String
+  email      String          @unique
+  role       Role            @default(WORKER)
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
+  jobs       JobAssignment[]
+
+  @@map("users")
+}
+
+model Client {
+  id         String   @id @default(uuid())
+  name       String
+  address    String
+  contact    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  jobs       Job[]
+
+  @@map("clients")
+}
+
+model Job {
+  id          String          @id @default(uuid())
+  client_id   String
+  description String
+  location    String
+  type        JobType
+  date        DateTime
+  time        DateTime
+  created_at  DateTime        @default(now())
+  updated_at  DateTime        @updatedAt
+  client      Client          @relation(fields: [client_id], references: [id])
+  assignments JobAssignment[]
+
+  @@map("jobs")
+}
+
+model JobAssignment {
+  id         String   @id @default(uuid())
+  job_id     String
+  worker_id  String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  job        Job      @relation(fields: [job_id], references: [id])
+  worker     User     @relation(fields: [worker_id], references: [id])
+
+  @@map("job_assignments")
+}
+
+enum Role {
+  ADMIN
+  WORKER
+}
+
+enum JobType {
+  REGULAR
+  DEEP_CLEAN
+  MAINTENANCE
+  SPECIAL
+}
