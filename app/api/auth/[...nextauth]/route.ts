@@ -1,26 +1,37 @@
-import { NextAuthOptions } from 'next-auth'
-import NextAuth from 'next-auth/next'
+import NextAuth from 'next-auth'
+import type { NextAuthConfig, User } from 'next-auth'
+import type { JWT } from 'next-auth/jwt'
+import type { Session } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { supabase } from '@/lib/supabase'
 import { Role } from '@prisma/client'
 
-export const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthConfig = {
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      id: "credentials",
+      name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        email: { 
+          type: "email", 
+          label: "Email",
+          required: true 
+        },
+        password: { 
+          type: "password", 
+          label: "Password",
+          required: true 
+        }
       },
-      async authorize(credentials) {
+      async authorize(credentials: Partial<Record<"email" | "password", unknown>>, request: Request) {
         if (!credentials?.email || !credentials?.password) {
           return null
         }
 
         const { data: { user }, error } = await supabase.auth.signInWithPassword({
-          email: credentials.email,
-          password: credentials.password,
+          email: credentials.email as string,
+          password: credentials.password as string,
         })
 
         if (error || !user) {
@@ -48,15 +59,15 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt'
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT & { role?: Role }, user: User & { role?: Role } }) {
       if (user) {
-        token.role = user.role
+        token.role = user.role || Role.CLIENT
       }
       return token
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session, token: JWT & { role?: Role } }) {
       if (session.user) {
-        session.user.role = token.role
+        session.user.role = token.role || Role.CLIENT
       }
       return session
     }

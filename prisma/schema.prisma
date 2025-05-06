@@ -1,73 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-  output   = "./generated/client"
-}
-
-model User {
-  id         String         @id @default(uuid())
-  name       String
-  email      String         @unique
-  role       Role          @default(WORKER)
-  created_at DateTime      @default(now())
-  updated_at DateTime      @updatedAt
-  jobs       JobAssignment[]
-
-  @@map("users")
-}
-
-model Client {
-  id         String   @id @default(uuid())
-  name       String
-  address    String
-  contact    String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  jobs       Job[]
-
-  @@map("clients")
-}
-
-model Job {
-  id          String         @id @default(uuid())
-  client_id   String
-  description String
-  location    String
-  type        JobType
-  date        DateTime
-  time        DateTime
-  created_at  DateTime       @default(now())
-  updated_at  DateTime       @updatedAt
-  client      Client         @relation(fields: [client_id], references: [id])
-  assignments JobAssignment[]
-
-  @@map("jobs")
-}
-
-model JobAssignment {
-  id         String   @id @default(uuid())
-  job_id     String
-  worker_id  String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  job        Job      @relation(fields: [job_id], references: [id])
-  worker     User     @relation(fields: [worker_id], references: [id])
-
-  @@map("job_assignments")
-}
-
 enum Role {
   ADMIN
   WORKER
+  CLIENT
 }
 
 enum JobType {
-  REGULAR
-  DEEP_CLEAN
-  MAINTENANCE
-  SPECIAL
+  RESIDENTIAL
+  COMMERCIAL
+  INDUSTRIAL
+}
+
+enum JobStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(WORKER)
+  accounts      Account[]
+  sessions      Session[]
+
+  worker_assignments Assignment[]
+  client            Client?
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Client {
+  id     String @id @default(cuid())
+  name   String
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobs   Job[]
+}
+
+model Job {
+  id          String      @id @default(cuid())
+  title       String
+  description String
+  location    String
+  type        JobType
+  status      JobStatus   @default(PENDING)
+  start_date  DateTime
+  end_date    DateTime
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
+  clientId    String
+  client      Client      @relation(fields: [clientId], references: [id])
+  assignments Assignment[]
+}
+
+model Assignment {
+  id       String @id @default(cuid())
+  jobId    String
+  workerId String
+  job      Job    @relation(fields: [jobId], references: [id])
+  worker   User   @relation(fields: [workerId], references: [id])
 }

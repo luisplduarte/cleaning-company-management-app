@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model Worker
+ * 
+ */
+export type Worker = $Result.DefaultSelection<Prisma.$WorkerPayload>
+/**
  * Model Client
  * 
  */
@@ -40,7 +45,7 @@ export type JobAssignment = $Result.DefaultSelection<Prisma.$JobAssignmentPayloa
 export namespace $Enums {
   export const Role: {
   ADMIN: 'ADMIN',
-  WORKER: 'WORKER'
+  USER: 'USER'
 };
 
 export type Role = (typeof Role)[keyof typeof Role]
@@ -55,6 +60,16 @@ export const JobType: {
 
 export type JobType = (typeof JobType)[keyof typeof JobType]
 
+
+export const JobStatus: {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type JobStatus = (typeof JobStatus)[keyof typeof JobStatus]
+
 }
 
 export type Role = $Enums.Role
@@ -64,6 +79,10 @@ export const Role: typeof $Enums.Role
 export type JobType = $Enums.JobType
 
 export const JobType: typeof $Enums.JobType
+
+export type JobStatus = $Enums.JobStatus
+
+export const JobStatus: typeof $Enums.JobStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -199,6 +218,16 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.worker`: Exposes CRUD operations for the **Worker** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Workers
+    * const workers = await prisma.worker.findMany()
+    * ```
+    */
+  get worker(): Prisma.WorkerDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.client`: Exposes CRUD operations for the **Client** model.
@@ -670,6 +699,7 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
+    Worker: 'Worker',
     Client: 'Client',
     Job: 'Job',
     JobAssignment: 'JobAssignment'
@@ -691,7 +721,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "client" | "job" | "jobAssignment"
+      modelProps: "user" | "worker" | "client" | "job" | "jobAssignment"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -766,6 +796,80 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      Worker: {
+        payload: Prisma.$WorkerPayload<ExtArgs>
+        fields: Prisma.WorkerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
+          }
+          findMany: {
+            args: Prisma.WorkerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>[]
+          }
+          create: {
+            args: Prisma.WorkerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
+          }
+          createMany: {
+            args: Prisma.WorkerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>[]
+          }
+          delete: {
+            args: Prisma.WorkerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
+          }
+          update: {
+            args: Prisma.WorkerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorker>
+          }
+          groupBy: {
+            args: Prisma.WorkerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkerCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkerCountAggregateOutputType> | number
           }
         }
       }
@@ -1076,6 +1180,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
+    worker?: WorkerOmit
     client?: ClientOmit
     job?: JobOmit
     jobAssignment?: JobAssignmentOmit
@@ -1169,32 +1274,32 @@ export namespace Prisma {
 
 
   /**
-   * Count Type UserCountOutputType
+   * Count Type WorkerCountOutputType
    */
 
-  export type UserCountOutputType = {
+  export type WorkerCountOutputType = {
     jobs: number
   }
 
-  export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    jobs?: boolean | UserCountOutputTypeCountJobsArgs
+  export type WorkerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobs?: boolean | WorkerCountOutputTypeCountJobsArgs
   }
 
   // Custom InputTypes
   /**
-   * UserCountOutputType without action
+   * WorkerCountOutputType without action
    */
-  export type UserCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type WorkerCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the UserCountOutputType
+     * Select specific fields to fetch from the WorkerCountOutputType
      */
-    select?: UserCountOutputTypeSelect<ExtArgs> | null
+    select?: WorkerCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * UserCountOutputType without action
+   * WorkerCountOutputType without action
    */
-  export type UserCountOutputTypeCountJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type WorkerCountOutputTypeCountJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobAssignmentWhereInput
   }
 
@@ -1437,8 +1542,6 @@ export namespace Prisma {
     role?: boolean
     created_at?: boolean
     updated_at?: boolean
-    jobs?: boolean | User$jobsArgs<ExtArgs>
-    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1469,18 +1572,10 @@ export namespace Prisma {
   }
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "role" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
-  export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    jobs?: boolean | User$jobsArgs<ExtArgs>
-    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
-    objects: {
-      jobs: Prisma.$JobAssignmentPayload<ExtArgs>[]
-    }
+    objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
@@ -1882,7 +1977,6 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    jobs<T extends User$jobsArgs<ExtArgs> = {}>(args?: Subset<T, User$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1935,10 +2029,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -1957,10 +2047,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -1978,10 +2064,6 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
     /**
      * Filter, which User to fetch.
      */
@@ -2031,10 +2113,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter, which User to fetch.
      */
     where?: UserWhereInput
@@ -2083,10 +2161,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter, which Users to fetch.
      */
     where?: UserWhereInput
@@ -2129,10 +2203,6 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to create a User.
      */
@@ -2181,10 +2251,6 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to update a User.
      */
@@ -2252,10 +2318,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * The filter to search for the User to update in case it exists.
      */
     where: UserWhereUniqueInput
@@ -2282,10 +2344,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter which User to delete.
      */
     where: UserWhereUniqueInput
@@ -2306,9 +2364,1077 @@ export namespace Prisma {
   }
 
   /**
-   * User.jobs
+   * User without action
    */
-  export type User$jobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Worker
+   */
+
+  export type AggregateWorker = {
+    _count: WorkerCountAggregateOutputType | null
+    _min: WorkerMinAggregateOutputType | null
+    _max: WorkerMaxAggregateOutputType | null
+  }
+
+  export type WorkerMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    email: string | null
+    phone: string | null
+    active: boolean | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type WorkerMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    email: string | null
+    phone: string | null
+    active: boolean | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type WorkerCountAggregateOutputType = {
+    id: number
+    name: number
+    email: number
+    phone: number
+    active: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type WorkerMinAggregateInputType = {
+    id?: true
+    name?: true
+    email?: true
+    phone?: true
+    active?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type WorkerMaxAggregateInputType = {
+    id?: true
+    name?: true
+    email?: true
+    phone?: true
+    active?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type WorkerCountAggregateInputType = {
+    id?: true
+    name?: true
+    email?: true
+    phone?: true
+    active?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type WorkerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Worker to aggregate.
+     */
+    where?: WorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Workers to fetch.
+     */
+    orderBy?: WorkerOrderByWithRelationInput | WorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Workers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Workers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Workers
+    **/
+    _count?: true | WorkerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkerMaxAggregateInputType
+  }
+
+  export type GetWorkerAggregateType<T extends WorkerAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorker]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorker[P]>
+      : GetScalarType<T[P], AggregateWorker[P]>
+  }
+
+
+
+
+  export type WorkerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkerWhereInput
+    orderBy?: WorkerOrderByWithAggregationInput | WorkerOrderByWithAggregationInput[]
+    by: WorkerScalarFieldEnum[] | WorkerScalarFieldEnum
+    having?: WorkerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkerCountAggregateInputType | true
+    _min?: WorkerMinAggregateInputType
+    _max?: WorkerMaxAggregateInputType
+  }
+
+  export type WorkerGroupByOutputType = {
+    id: string
+    name: string
+    email: string | null
+    phone: string | null
+    active: boolean
+    created_at: Date
+    updated_at: Date
+    _count: WorkerCountAggregateOutputType | null
+    _min: WorkerMinAggregateOutputType | null
+    _max: WorkerMaxAggregateOutputType | null
+  }
+
+  type GetWorkerGroupByPayload<T extends WorkerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkerGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    active?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    jobs?: boolean | Worker$jobsArgs<ExtArgs>
+    _count?: boolean | WorkerCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["worker"]>
+
+  export type WorkerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    active?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }, ExtArgs["result"]["worker"]>
+
+  export type WorkerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    active?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }, ExtArgs["result"]["worker"]>
+
+  export type WorkerSelectScalar = {
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    active?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "active" | "created_at" | "updated_at", ExtArgs["result"]["worker"]>
+  export type WorkerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobs?: boolean | Worker$jobsArgs<ExtArgs>
+    _count?: boolean | WorkerCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type WorkerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type WorkerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $WorkerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Worker"
+    objects: {
+      jobs: Prisma.$JobAssignmentPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      email: string | null
+      phone: string | null
+      active: boolean
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["worker"]>
+    composites: {}
+  }
+
+  type WorkerGetPayload<S extends boolean | null | undefined | WorkerDefaultArgs> = $Result.GetResult<Prisma.$WorkerPayload, S>
+
+  type WorkerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkerCountAggregateInputType | true
+    }
+
+  export interface WorkerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Worker'], meta: { name: 'Worker' } }
+    /**
+     * Find zero or one Worker that matches the filter.
+     * @param {WorkerFindUniqueArgs} args - Arguments to find a Worker
+     * @example
+     * // Get one Worker
+     * const worker = await prisma.worker.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkerFindUniqueArgs>(args: SelectSubset<T, WorkerFindUniqueArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Worker that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkerFindUniqueOrThrowArgs} args - Arguments to find a Worker
+     * @example
+     * // Get one Worker
+     * const worker = await prisma.worker.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkerFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Worker that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerFindFirstArgs} args - Arguments to find a Worker
+     * @example
+     * // Get one Worker
+     * const worker = await prisma.worker.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkerFindFirstArgs>(args?: SelectSubset<T, WorkerFindFirstArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Worker that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerFindFirstOrThrowArgs} args - Arguments to find a Worker
+     * @example
+     * // Get one Worker
+     * const worker = await prisma.worker.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkerFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkerFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Workers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Workers
+     * const workers = await prisma.worker.findMany()
+     * 
+     * // Get first 10 Workers
+     * const workers = await prisma.worker.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workerWithIdOnly = await prisma.worker.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkerFindManyArgs>(args?: SelectSubset<T, WorkerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Worker.
+     * @param {WorkerCreateArgs} args - Arguments to create a Worker.
+     * @example
+     * // Create one Worker
+     * const Worker = await prisma.worker.create({
+     *   data: {
+     *     // ... data to create a Worker
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkerCreateArgs>(args: SelectSubset<T, WorkerCreateArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Workers.
+     * @param {WorkerCreateManyArgs} args - Arguments to create many Workers.
+     * @example
+     * // Create many Workers
+     * const worker = await prisma.worker.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkerCreateManyArgs>(args?: SelectSubset<T, WorkerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Workers and returns the data saved in the database.
+     * @param {WorkerCreateManyAndReturnArgs} args - Arguments to create many Workers.
+     * @example
+     * // Create many Workers
+     * const worker = await prisma.worker.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Workers and only return the `id`
+     * const workerWithIdOnly = await prisma.worker.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkerCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Worker.
+     * @param {WorkerDeleteArgs} args - Arguments to delete one Worker.
+     * @example
+     * // Delete one Worker
+     * const Worker = await prisma.worker.delete({
+     *   where: {
+     *     // ... filter to delete one Worker
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkerDeleteArgs>(args: SelectSubset<T, WorkerDeleteArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Worker.
+     * @param {WorkerUpdateArgs} args - Arguments to update one Worker.
+     * @example
+     * // Update one Worker
+     * const worker = await prisma.worker.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkerUpdateArgs>(args: SelectSubset<T, WorkerUpdateArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Workers.
+     * @param {WorkerDeleteManyArgs} args - Arguments to filter Workers to delete.
+     * @example
+     * // Delete a few Workers
+     * const { count } = await prisma.worker.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkerDeleteManyArgs>(args?: SelectSubset<T, WorkerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Workers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Workers
+     * const worker = await prisma.worker.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkerUpdateManyArgs>(args: SelectSubset<T, WorkerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Workers and returns the data updated in the database.
+     * @param {WorkerUpdateManyAndReturnArgs} args - Arguments to update many Workers.
+     * @example
+     * // Update many Workers
+     * const worker = await prisma.worker.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Workers and only return the `id`
+     * const workerWithIdOnly = await prisma.worker.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkerUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Worker.
+     * @param {WorkerUpsertArgs} args - Arguments to update or create a Worker.
+     * @example
+     * // Update or create a Worker
+     * const worker = await prisma.worker.upsert({
+     *   create: {
+     *     // ... data to create a Worker
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Worker we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkerUpsertArgs>(args: SelectSubset<T, WorkerUpsertArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Workers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCountArgs} args - Arguments to filter Workers to count.
+     * @example
+     * // Count the number of Workers
+     * const count = await prisma.worker.count({
+     *   where: {
+     *     // ... the filter for the Workers we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkerCountArgs>(
+      args?: Subset<T, WorkerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Worker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkerAggregateArgs>(args: Subset<T, WorkerAggregateArgs>): Prisma.PrismaPromise<GetWorkerAggregateType<T>>
+
+    /**
+     * Group by Worker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkerGroupByArgs['orderBy'] }
+        : { orderBy?: WorkerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Worker model
+   */
+  readonly fields: WorkerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Worker.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    jobs<T extends Worker$jobsArgs<ExtArgs> = {}>(args?: Subset<T, Worker$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Worker model
+   */
+  interface WorkerFieldRefs {
+    readonly id: FieldRef<"Worker", 'String'>
+    readonly name: FieldRef<"Worker", 'String'>
+    readonly email: FieldRef<"Worker", 'String'>
+    readonly phone: FieldRef<"Worker", 'String'>
+    readonly active: FieldRef<"Worker", 'Boolean'>
+    readonly created_at: FieldRef<"Worker", 'DateTime'>
+    readonly updated_at: FieldRef<"Worker", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Worker findUnique
+   */
+  export type WorkerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which Worker to fetch.
+     */
+    where: WorkerWhereUniqueInput
+  }
+
+  /**
+   * Worker findUniqueOrThrow
+   */
+  export type WorkerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which Worker to fetch.
+     */
+    where: WorkerWhereUniqueInput
+  }
+
+  /**
+   * Worker findFirst
+   */
+  export type WorkerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which Worker to fetch.
+     */
+    where?: WorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Workers to fetch.
+     */
+    orderBy?: WorkerOrderByWithRelationInput | WorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Workers.
+     */
+    cursor?: WorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Workers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Workers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Workers.
+     */
+    distinct?: WorkerScalarFieldEnum | WorkerScalarFieldEnum[]
+  }
+
+  /**
+   * Worker findFirstOrThrow
+   */
+  export type WorkerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which Worker to fetch.
+     */
+    where?: WorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Workers to fetch.
+     */
+    orderBy?: WorkerOrderByWithRelationInput | WorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Workers.
+     */
+    cursor?: WorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Workers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Workers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Workers.
+     */
+    distinct?: WorkerScalarFieldEnum | WorkerScalarFieldEnum[]
+  }
+
+  /**
+   * Worker findMany
+   */
+  export type WorkerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which Workers to fetch.
+     */
+    where?: WorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Workers to fetch.
+     */
+    orderBy?: WorkerOrderByWithRelationInput | WorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Workers.
+     */
+    cursor?: WorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Workers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Workers.
+     */
+    skip?: number
+    distinct?: WorkerScalarFieldEnum | WorkerScalarFieldEnum[]
+  }
+
+  /**
+   * Worker create
+   */
+  export type WorkerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Worker.
+     */
+    data: XOR<WorkerCreateInput, WorkerUncheckedCreateInput>
+  }
+
+  /**
+   * Worker createMany
+   */
+  export type WorkerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Workers.
+     */
+    data: WorkerCreateManyInput | WorkerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Worker createManyAndReturn
+   */
+  export type WorkerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * The data used to create many Workers.
+     */
+    data: WorkerCreateManyInput | WorkerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Worker update
+   */
+  export type WorkerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Worker.
+     */
+    data: XOR<WorkerUpdateInput, WorkerUncheckedUpdateInput>
+    /**
+     * Choose, which Worker to update.
+     */
+    where: WorkerWhereUniqueInput
+  }
+
+  /**
+   * Worker updateMany
+   */
+  export type WorkerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Workers.
+     */
+    data: XOR<WorkerUpdateManyMutationInput, WorkerUncheckedUpdateManyInput>
+    /**
+     * Filter which Workers to update
+     */
+    where?: WorkerWhereInput
+    /**
+     * Limit how many Workers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Worker updateManyAndReturn
+   */
+  export type WorkerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * The data used to update Workers.
+     */
+    data: XOR<WorkerUpdateManyMutationInput, WorkerUncheckedUpdateManyInput>
+    /**
+     * Filter which Workers to update
+     */
+    where?: WorkerWhereInput
+    /**
+     * Limit how many Workers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Worker upsert
+   */
+  export type WorkerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Worker to update in case it exists.
+     */
+    where: WorkerWhereUniqueInput
+    /**
+     * In case the Worker found by the `where` argument doesn't exist, create a new Worker with this data.
+     */
+    create: XOR<WorkerCreateInput, WorkerUncheckedCreateInput>
+    /**
+     * In case the Worker was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkerUpdateInput, WorkerUncheckedUpdateInput>
+  }
+
+  /**
+   * Worker delete
+   */
+  export type WorkerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * Filter which Worker to delete.
+     */
+    where: WorkerWhereUniqueInput
+  }
+
+  /**
+   * Worker deleteMany
+   */
+  export type WorkerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Workers to delete
+     */
+    where?: WorkerWhereInput
+    /**
+     * Limit how many Workers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Worker.jobs
+   */
+  export type Worker$jobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the JobAssignment
      */
@@ -2330,21 +3456,21 @@ export namespace Prisma {
   }
 
   /**
-   * User without action
+   * Worker without action
    */
-  export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type WorkerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the User
+     * Select specific fields to fetch from the Worker
      */
-    select?: UserSelect<ExtArgs> | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the User
+     * Omit specific fields from the Worker
      */
-    omit?: UserOmit<ExtArgs> | null
+    omit?: WorkerOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInclude<ExtArgs> | null
+    include?: WorkerInclude<ExtArgs> | null
   }
 
 
@@ -3443,36 +4569,42 @@ export namespace Prisma {
 
   export type JobMinAggregateOutputType = {
     id: string | null
-    client_id: string | null
+    title: string | null
     description: string | null
     location: string | null
+    status: $Enums.JobStatus | null
     type: $Enums.JobType | null
-    date: Date | null
-    time: Date | null
+    start_date: Date | null
+    end_date: Date | null
+    client_id: string | null
     created_at: Date | null
     updated_at: Date | null
   }
 
   export type JobMaxAggregateOutputType = {
     id: string | null
-    client_id: string | null
+    title: string | null
     description: string | null
     location: string | null
+    status: $Enums.JobStatus | null
     type: $Enums.JobType | null
-    date: Date | null
-    time: Date | null
+    start_date: Date | null
+    end_date: Date | null
+    client_id: string | null
     created_at: Date | null
     updated_at: Date | null
   }
 
   export type JobCountAggregateOutputType = {
     id: number
-    client_id: number
+    title: number
     description: number
     location: number
+    status: number
     type: number
-    date: number
-    time: number
+    start_date: number
+    end_date: number
+    client_id: number
     created_at: number
     updated_at: number
     _all: number
@@ -3481,36 +4613,42 @@ export namespace Prisma {
 
   export type JobMinAggregateInputType = {
     id?: true
-    client_id?: true
+    title?: true
     description?: true
     location?: true
+    status?: true
     type?: true
-    date?: true
-    time?: true
+    start_date?: true
+    end_date?: true
+    client_id?: true
     created_at?: true
     updated_at?: true
   }
 
   export type JobMaxAggregateInputType = {
     id?: true
-    client_id?: true
+    title?: true
     description?: true
     location?: true
+    status?: true
     type?: true
-    date?: true
-    time?: true
+    start_date?: true
+    end_date?: true
+    client_id?: true
     created_at?: true
     updated_at?: true
   }
 
   export type JobCountAggregateInputType = {
     id?: true
-    client_id?: true
+    title?: true
     description?: true
     location?: true
+    status?: true
     type?: true
-    date?: true
-    time?: true
+    start_date?: true
+    end_date?: true
+    client_id?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -3590,12 +4728,14 @@ export namespace Prisma {
 
   export type JobGroupByOutputType = {
     id: string
-    client_id: string
+    title: string
     description: string
     location: string
+    status: $Enums.JobStatus
     type: $Enums.JobType
-    date: Date
-    time: Date
+    start_date: Date
+    end_date: Date
+    client_id: string
     created_at: Date
     updated_at: Date
     _count: JobCountAggregateOutputType | null
@@ -3619,12 +4759,14 @@ export namespace Prisma {
 
   export type JobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    client_id?: boolean
+    title?: boolean
     description?: boolean
     location?: boolean
+    status?: boolean
     type?: boolean
-    date?: boolean
-    time?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    client_id?: boolean
     created_at?: boolean
     updated_at?: boolean
     client?: boolean | ClientDefaultArgs<ExtArgs>
@@ -3634,12 +4776,14 @@ export namespace Prisma {
 
   export type JobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    client_id?: boolean
+    title?: boolean
     description?: boolean
     location?: boolean
+    status?: boolean
     type?: boolean
-    date?: boolean
-    time?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    client_id?: boolean
     created_at?: boolean
     updated_at?: boolean
     client?: boolean | ClientDefaultArgs<ExtArgs>
@@ -3647,12 +4791,14 @@ export namespace Prisma {
 
   export type JobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    client_id?: boolean
+    title?: boolean
     description?: boolean
     location?: boolean
+    status?: boolean
     type?: boolean
-    date?: boolean
-    time?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    client_id?: boolean
     created_at?: boolean
     updated_at?: boolean
     client?: boolean | ClientDefaultArgs<ExtArgs>
@@ -3660,17 +4806,19 @@ export namespace Prisma {
 
   export type JobSelectScalar = {
     id?: boolean
-    client_id?: boolean
+    title?: boolean
     description?: boolean
     location?: boolean
+    status?: boolean
     type?: boolean
-    date?: boolean
-    time?: boolean
+    start_date?: boolean
+    end_date?: boolean
+    client_id?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "client_id" | "description" | "location" | "type" | "date" | "time" | "created_at" | "updated_at", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "location" | "status" | "type" | "start_date" | "end_date" | "client_id" | "created_at" | "updated_at", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     client?: boolean | ClientDefaultArgs<ExtArgs>
     assignments?: boolean | Job$assignmentsArgs<ExtArgs>
@@ -3691,12 +4839,14 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      client_id: string
+      title: string
       description: string
       location: string
+      status: $Enums.JobStatus
       type: $Enums.JobType
-      date: Date
-      time: Date
+      start_date: Date
+      end_date: Date
+      client_id: string
       created_at: Date
       updated_at: Date
     }, ExtArgs["result"]["job"]>
@@ -4125,12 +5275,14 @@ export namespace Prisma {
    */
   interface JobFieldRefs {
     readonly id: FieldRef<"Job", 'String'>
-    readonly client_id: FieldRef<"Job", 'String'>
+    readonly title: FieldRef<"Job", 'String'>
     readonly description: FieldRef<"Job", 'String'>
     readonly location: FieldRef<"Job", 'String'>
+    readonly status: FieldRef<"Job", 'JobStatus'>
     readonly type: FieldRef<"Job", 'JobType'>
-    readonly date: FieldRef<"Job", 'DateTime'>
-    readonly time: FieldRef<"Job", 'DateTime'>
+    readonly start_date: FieldRef<"Job", 'DateTime'>
+    readonly end_date: FieldRef<"Job", 'DateTime'>
+    readonly client_id: FieldRef<"Job", 'String'>
     readonly created_at: FieldRef<"Job", 'DateTime'>
     readonly updated_at: FieldRef<"Job", 'DateTime'>
   }
@@ -4736,7 +5888,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
-    worker?: boolean | UserDefaultArgs<ExtArgs>
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobAssignment"]>
 
   export type JobAssignmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4746,7 +5898,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
-    worker?: boolean | UserDefaultArgs<ExtArgs>
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobAssignment"]>
 
   export type JobAssignmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4756,7 +5908,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
-    worker?: boolean | UserDefaultArgs<ExtArgs>
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobAssignment"]>
 
   export type JobAssignmentSelectScalar = {
@@ -4770,22 +5922,22 @@ export namespace Prisma {
   export type JobAssignmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "job_id" | "worker_id" | "created_at" | "updated_at", ExtArgs["result"]["jobAssignment"]>
   export type JobAssignmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
-    worker?: boolean | UserDefaultArgs<ExtArgs>
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
   }
   export type JobAssignmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
-    worker?: boolean | UserDefaultArgs<ExtArgs>
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
   }
   export type JobAssignmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
-    worker?: boolean | UserDefaultArgs<ExtArgs>
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
   }
 
   export type $JobAssignmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "JobAssignment"
     objects: {
       job: Prisma.$JobPayload<ExtArgs>
-      worker: Prisma.$UserPayload<ExtArgs>
+      worker: Prisma.$WorkerPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5188,7 +6340,7 @@ export namespace Prisma {
   export interface Prisma__JobAssignmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    worker<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    worker<T extends WorkerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkerDefaultArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5663,6 +6815,19 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+  export const WorkerScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    email: 'email',
+    phone: 'phone',
+    active: 'active',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type WorkerScalarFieldEnum = (typeof WorkerScalarFieldEnum)[keyof typeof WorkerScalarFieldEnum]
+
+
   export const ClientScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -5677,12 +6842,14 @@ export namespace Prisma {
 
   export const JobScalarFieldEnum: {
     id: 'id',
-    client_id: 'client_id',
+    title: 'title',
     description: 'description',
     location: 'location',
+    status: 'status',
     type: 'type',
-    date: 'date',
-    time: 'time',
+    start_date: 'start_date',
+    end_date: 'end_date',
+    client_id: 'client_id',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -5715,6 +6882,14 @@ export namespace Prisma {
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -5765,6 +6940,27 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'JobStatus'
+   */
+  export type EnumJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'JobStatus[]'
+   */
+  export type ListEnumJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'JobType'
    */
   export type EnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType'>
@@ -5805,7 +7001,6 @@ export namespace Prisma {
     role?: EnumRoleFilter<"User"> | $Enums.Role
     created_at?: DateTimeFilter<"User"> | Date | string
     updated_at?: DateTimeFilter<"User"> | Date | string
-    jobs?: JobAssignmentListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -5815,7 +7010,6 @@ export namespace Prisma {
     role?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
-    jobs?: JobAssignmentOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -5828,7 +7022,6 @@ export namespace Prisma {
     role?: EnumRoleFilter<"User"> | $Enums.Role
     created_at?: DateTimeFilter<"User"> | Date | string
     updated_at?: DateTimeFilter<"User"> | Date | string
-    jobs?: JobAssignmentListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -5853,6 +7046,71 @@ export namespace Prisma {
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     created_at?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"User"> | Date | string
+  }
+
+  export type WorkerWhereInput = {
+    AND?: WorkerWhereInput | WorkerWhereInput[]
+    OR?: WorkerWhereInput[]
+    NOT?: WorkerWhereInput | WorkerWhereInput[]
+    id?: StringFilter<"Worker"> | string
+    name?: StringFilter<"Worker"> | string
+    email?: StringNullableFilter<"Worker"> | string | null
+    phone?: StringNullableFilter<"Worker"> | string | null
+    active?: BoolFilter<"Worker"> | boolean
+    created_at?: DateTimeFilter<"Worker"> | Date | string
+    updated_at?: DateTimeFilter<"Worker"> | Date | string
+    jobs?: JobAssignmentListRelationFilter
+  }
+
+  export type WorkerOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    active?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    jobs?: JobAssignmentOrderByRelationAggregateInput
+  }
+
+  export type WorkerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WorkerWhereInput | WorkerWhereInput[]
+    OR?: WorkerWhereInput[]
+    NOT?: WorkerWhereInput | WorkerWhereInput[]
+    name?: StringFilter<"Worker"> | string
+    email?: StringNullableFilter<"Worker"> | string | null
+    phone?: StringNullableFilter<"Worker"> | string | null
+    active?: BoolFilter<"Worker"> | boolean
+    created_at?: DateTimeFilter<"Worker"> | Date | string
+    updated_at?: DateTimeFilter<"Worker"> | Date | string
+    jobs?: JobAssignmentListRelationFilter
+  }, "id">
+
+  export type WorkerOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    active?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: WorkerCountOrderByAggregateInput
+    _max?: WorkerMaxOrderByAggregateInput
+    _min?: WorkerMinOrderByAggregateInput
+  }
+
+  export type WorkerScalarWhereWithAggregatesInput = {
+    AND?: WorkerScalarWhereWithAggregatesInput | WorkerScalarWhereWithAggregatesInput[]
+    OR?: WorkerScalarWhereWithAggregatesInput[]
+    NOT?: WorkerScalarWhereWithAggregatesInput | WorkerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Worker"> | string
+    name?: StringWithAggregatesFilter<"Worker"> | string
+    email?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    phone?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    active?: BoolWithAggregatesFilter<"Worker"> | boolean
+    created_at?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
   }
 
   export type ClientWhereInput = {
@@ -5920,12 +7178,14 @@ export namespace Prisma {
     OR?: JobWhereInput[]
     NOT?: JobWhereInput | JobWhereInput[]
     id?: StringFilter<"Job"> | string
-    client_id?: StringFilter<"Job"> | string
+    title?: StringFilter<"Job"> | string
     description?: StringFilter<"Job"> | string
     location?: StringFilter<"Job"> | string
+    status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
     type?: EnumJobTypeFilter<"Job"> | $Enums.JobType
-    date?: DateTimeFilter<"Job"> | Date | string
-    time?: DateTimeFilter<"Job"> | Date | string
+    start_date?: DateTimeFilter<"Job"> | Date | string
+    end_date?: DateTimeFilter<"Job"> | Date | string
+    client_id?: StringFilter<"Job"> | string
     created_at?: DateTimeFilter<"Job"> | Date | string
     updated_at?: DateTimeFilter<"Job"> | Date | string
     client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
@@ -5934,12 +7194,14 @@ export namespace Prisma {
 
   export type JobOrderByWithRelationInput = {
     id?: SortOrder
-    client_id?: SortOrder
+    title?: SortOrder
     description?: SortOrder
     location?: SortOrder
+    status?: SortOrder
     type?: SortOrder
-    date?: SortOrder
-    time?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    client_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     client?: ClientOrderByWithRelationInput
@@ -5951,12 +7213,14 @@ export namespace Prisma {
     AND?: JobWhereInput | JobWhereInput[]
     OR?: JobWhereInput[]
     NOT?: JobWhereInput | JobWhereInput[]
-    client_id?: StringFilter<"Job"> | string
+    title?: StringFilter<"Job"> | string
     description?: StringFilter<"Job"> | string
     location?: StringFilter<"Job"> | string
+    status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
     type?: EnumJobTypeFilter<"Job"> | $Enums.JobType
-    date?: DateTimeFilter<"Job"> | Date | string
-    time?: DateTimeFilter<"Job"> | Date | string
+    start_date?: DateTimeFilter<"Job"> | Date | string
+    end_date?: DateTimeFilter<"Job"> | Date | string
+    client_id?: StringFilter<"Job"> | string
     created_at?: DateTimeFilter<"Job"> | Date | string
     updated_at?: DateTimeFilter<"Job"> | Date | string
     client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
@@ -5965,12 +7229,14 @@ export namespace Prisma {
 
   export type JobOrderByWithAggregationInput = {
     id?: SortOrder
-    client_id?: SortOrder
+    title?: SortOrder
     description?: SortOrder
     location?: SortOrder
+    status?: SortOrder
     type?: SortOrder
-    date?: SortOrder
-    time?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    client_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: JobCountOrderByAggregateInput
@@ -5983,12 +7249,14 @@ export namespace Prisma {
     OR?: JobScalarWhereWithAggregatesInput[]
     NOT?: JobScalarWhereWithAggregatesInput | JobScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Job"> | string
-    client_id?: StringWithAggregatesFilter<"Job"> | string
+    title?: StringWithAggregatesFilter<"Job"> | string
     description?: StringWithAggregatesFilter<"Job"> | string
     location?: StringWithAggregatesFilter<"Job"> | string
+    status?: EnumJobStatusWithAggregatesFilter<"Job"> | $Enums.JobStatus
     type?: EnumJobTypeWithAggregatesFilter<"Job"> | $Enums.JobType
-    date?: DateTimeWithAggregatesFilter<"Job"> | Date | string
-    time?: DateTimeWithAggregatesFilter<"Job"> | Date | string
+    start_date?: DateTimeWithAggregatesFilter<"Job"> | Date | string
+    end_date?: DateTimeWithAggregatesFilter<"Job"> | Date | string
+    client_id?: StringWithAggregatesFilter<"Job"> | string
     created_at?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Job"> | Date | string
   }
@@ -6003,7 +7271,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"JobAssignment"> | Date | string
     updated_at?: DateTimeFilter<"JobAssignment"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
-    worker?: XOR<UserScalarRelationFilter, UserWhereInput>
+    worker?: XOR<WorkerScalarRelationFilter, WorkerWhereInput>
   }
 
   export type JobAssignmentOrderByWithRelationInput = {
@@ -6013,7 +7281,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     job?: JobOrderByWithRelationInput
-    worker?: UserOrderByWithRelationInput
+    worker?: WorkerOrderByWithRelationInput
   }
 
   export type JobAssignmentWhereUniqueInput = Prisma.AtLeast<{
@@ -6026,7 +7294,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"JobAssignment"> | Date | string
     updated_at?: DateTimeFilter<"JobAssignment"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
-    worker?: XOR<UserScalarRelationFilter, UserWhereInput>
+    worker?: XOR<WorkerScalarRelationFilter, WorkerWhereInput>
   }, "id">
 
   export type JobAssignmentOrderByWithAggregationInput = {
@@ -6058,7 +7326,6 @@ export namespace Prisma {
     role?: $Enums.Role
     created_at?: Date | string
     updated_at?: Date | string
-    jobs?: JobAssignmentCreateNestedManyWithoutWorkerInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -6068,7 +7335,6 @@ export namespace Prisma {
     role?: $Enums.Role
     created_at?: Date | string
     updated_at?: Date | string
-    jobs?: JobAssignmentUncheckedCreateNestedManyWithoutWorkerInput
   }
 
   export type UserUpdateInput = {
@@ -6078,7 +7344,6 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    jobs?: JobAssignmentUpdateManyWithoutWorkerNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -6088,7 +7353,6 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    jobs?: JobAssignmentUncheckedUpdateManyWithoutWorkerNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -6114,6 +7378,80 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerCreateInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    active?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    jobs?: JobAssignmentCreateNestedManyWithoutWorkerInput
+  }
+
+  export type WorkerUncheckedCreateInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    active?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    jobs?: JobAssignmentUncheckedCreateNestedManyWithoutWorkerInput
+  }
+
+  export type WorkerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    active?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobAssignmentUpdateManyWithoutWorkerNestedInput
+  }
+
+  export type WorkerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    active?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobAssignmentUncheckedUpdateManyWithoutWorkerNestedInput
+  }
+
+  export type WorkerCreateManyInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    active?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type WorkerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    active?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6187,11 +7525,13 @@ export namespace Prisma {
 
   export type JobCreateInput = {
     id?: string
+    title: string
     description: string
     location: string
+    status?: $Enums.JobStatus
     type: $Enums.JobType
-    date: Date | string
-    time: Date | string
+    start_date: Date | string
+    end_date: Date | string
     created_at?: Date | string
     updated_at?: Date | string
     client: ClientCreateNestedOneWithoutJobsInput
@@ -6200,12 +7540,14 @@ export namespace Prisma {
 
   export type JobUncheckedCreateInput = {
     id?: string
-    client_id: string
+    title: string
     description: string
     location: string
+    status?: $Enums.JobStatus
     type: $Enums.JobType
-    date: Date | string
-    time: Date | string
+    start_date: Date | string
+    end_date: Date | string
+    client_id: string
     created_at?: Date | string
     updated_at?: Date | string
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
@@ -6213,11 +7555,13 @@ export namespace Prisma {
 
   export type JobUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    time?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
@@ -6226,12 +7570,14 @@ export namespace Prisma {
 
   export type JobUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    client_id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    time?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    client_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
@@ -6239,35 +7585,41 @@ export namespace Prisma {
 
   export type JobCreateManyInput = {
     id?: string
-    client_id: string
+    title: string
     description: string
     location: string
+    status?: $Enums.JobStatus
     type: $Enums.JobType
-    date: Date | string
-    time: Date | string
+    start_date: Date | string
+    end_date: Date | string
+    client_id: string
     created_at?: Date | string
     updated_at?: Date | string
   }
 
   export type JobUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    time?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    client_id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    time?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    client_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6277,7 +7629,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     job: JobCreateNestedOneWithoutAssignmentsInput
-    worker: UserCreateNestedOneWithoutJobsInput
+    worker: WorkerCreateNestedOneWithoutJobsInput
   }
 
   export type JobAssignmentUncheckedCreateInput = {
@@ -6293,7 +7645,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutAssignmentsNestedInput
-    worker?: UserUpdateOneRequiredWithoutJobsNestedInput
+    worker?: WorkerUpdateOneRequiredWithoutJobsNestedInput
   }
 
   export type JobAssignmentUncheckedUpdateInput = {
@@ -6357,16 +7709,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type JobAssignmentListRelationFilter = {
-    every?: JobAssignmentWhereInput
-    some?: JobAssignmentWhereInput
-    none?: JobAssignmentWhereInput
-  }
-
-  export type JobAssignmentOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
@@ -6438,6 +7780,97 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type JobAssignmentListRelationFilter = {
+    every?: JobAssignmentWhereInput
+    some?: JobAssignmentWhereInput
+    none?: JobAssignmentWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
+  export type JobAssignmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WorkerCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    active?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type WorkerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    active?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type WorkerMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    active?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type JobListRelationFilter = {
     every?: JobWhereInput
     some?: JobWhereInput
@@ -6475,6 +7908,13 @@ export namespace Prisma {
     updated_at?: SortOrder
   }
 
+  export type EnumJobStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobStatus | EnumJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobStatusFilter<$PrismaModel> | $Enums.JobStatus
+  }
+
   export type EnumJobTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
     in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
@@ -6489,38 +7929,54 @@ export namespace Prisma {
 
   export type JobCountOrderByAggregateInput = {
     id?: SortOrder
-    client_id?: SortOrder
+    title?: SortOrder
     description?: SortOrder
     location?: SortOrder
+    status?: SortOrder
     type?: SortOrder
-    date?: SortOrder
-    time?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    client_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
   export type JobMaxOrderByAggregateInput = {
     id?: SortOrder
-    client_id?: SortOrder
+    title?: SortOrder
     description?: SortOrder
     location?: SortOrder
+    status?: SortOrder
     type?: SortOrder
-    date?: SortOrder
-    time?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    client_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
   export type JobMinOrderByAggregateInput = {
     id?: SortOrder
-    client_id?: SortOrder
+    title?: SortOrder
     description?: SortOrder
     location?: SortOrder
+    status?: SortOrder
     type?: SortOrder
-    date?: SortOrder
-    time?: SortOrder
+    start_date?: SortOrder
+    end_date?: SortOrder
+    client_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+  }
+
+  export type EnumJobStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobStatus | EnumJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobStatusWithAggregatesFilter<$PrismaModel> | $Enums.JobStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJobStatusFilter<$PrismaModel>
+    _max?: NestedEnumJobStatusFilter<$PrismaModel>
   }
 
   export type EnumJobTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -6538,9 +7994,9 @@ export namespace Prisma {
     isNot?: JobWhereInput
   }
 
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
+  export type WorkerScalarRelationFilter = {
+    is?: WorkerWhereInput
+    isNot?: WorkerWhereInput
   }
 
   export type JobAssignmentCountOrderByAggregateInput = {
@@ -6567,6 +8023,18 @@ export namespace Prisma {
     updated_at?: SortOrder
   }
 
+  export type StringFieldUpdateOperationsInput = {
+    set?: string
+  }
+
+  export type EnumRoleFieldUpdateOperationsInput = {
+    set?: $Enums.Role
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
   export type JobAssignmentCreateNestedManyWithoutWorkerInput = {
     create?: XOR<JobAssignmentCreateWithoutWorkerInput, JobAssignmentUncheckedCreateWithoutWorkerInput> | JobAssignmentCreateWithoutWorkerInput[] | JobAssignmentUncheckedCreateWithoutWorkerInput[]
     connectOrCreate?: JobAssignmentCreateOrConnectWithoutWorkerInput | JobAssignmentCreateOrConnectWithoutWorkerInput[]
@@ -6581,16 +8049,12 @@ export namespace Prisma {
     connect?: JobAssignmentWhereUniqueInput | JobAssignmentWhereUniqueInput[]
   }
 
-  export type StringFieldUpdateOperationsInput = {
-    set?: string
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
-  export type EnumRoleFieldUpdateOperationsInput = {
-    set?: $Enums.Role
-  }
-
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type JobAssignmentUpdateManyWithoutWorkerNestedInput = {
@@ -6683,6 +8147,10 @@ export namespace Prisma {
     connect?: JobAssignmentWhereUniqueInput | JobAssignmentWhereUniqueInput[]
   }
 
+  export type EnumJobStatusFieldUpdateOperationsInput = {
+    set?: $Enums.JobStatus
+  }
+
   export type EnumJobTypeFieldUpdateOperationsInput = {
     set?: $Enums.JobType
   }
@@ -6729,10 +8197,10 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput
   }
 
-  export type UserCreateNestedOneWithoutJobsInput = {
-    create?: XOR<UserCreateWithoutJobsInput, UserUncheckedCreateWithoutJobsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutJobsInput
-    connect?: UserWhereUniqueInput
+  export type WorkerCreateNestedOneWithoutJobsInput = {
+    create?: XOR<WorkerCreateWithoutJobsInput, WorkerUncheckedCreateWithoutJobsInput>
+    connectOrCreate?: WorkerCreateOrConnectWithoutJobsInput
+    connect?: WorkerWhereUniqueInput
   }
 
   export type JobUpdateOneRequiredWithoutAssignmentsNestedInput = {
@@ -6743,12 +8211,12 @@ export namespace Prisma {
     update?: XOR<XOR<JobUpdateToOneWithWhereWithoutAssignmentsInput, JobUpdateWithoutAssignmentsInput>, JobUncheckedUpdateWithoutAssignmentsInput>
   }
 
-  export type UserUpdateOneRequiredWithoutJobsNestedInput = {
-    create?: XOR<UserCreateWithoutJobsInput, UserUncheckedCreateWithoutJobsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutJobsInput
-    upsert?: UserUpsertWithoutJobsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJobsInput, UserUpdateWithoutJobsInput>, UserUncheckedUpdateWithoutJobsInput>
+  export type WorkerUpdateOneRequiredWithoutJobsNestedInput = {
+    create?: XOR<WorkerCreateWithoutJobsInput, WorkerUncheckedCreateWithoutJobsInput>
+    connectOrCreate?: WorkerCreateOrConnectWithoutJobsInput
+    upsert?: WorkerUpsertWithoutJobsInput
+    connect?: WorkerWhereUniqueInput
+    update?: XOR<XOR<WorkerUpdateToOneWithWhereWithoutJobsInput, WorkerUpdateWithoutJobsInput>, WorkerUncheckedUpdateWithoutJobsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -6835,11 +8303,83 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumJobStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobStatus | EnumJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobStatusFilter<$PrismaModel> | $Enums.JobStatus
+  }
+
   export type NestedEnumJobTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
     in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
     notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumJobTypeFilter<$PrismaModel> | $Enums.JobType
+  }
+
+  export type NestedEnumJobStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobStatus | EnumJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobStatusWithAggregatesFilter<$PrismaModel> | $Enums.JobStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJobStatusFilter<$PrismaModel>
+    _max?: NestedEnumJobStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumJobTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -6905,11 +8445,13 @@ export namespace Prisma {
 
   export type JobCreateWithoutClientInput = {
     id?: string
+    title: string
     description: string
     location: string
+    status?: $Enums.JobStatus
     type: $Enums.JobType
-    date: Date | string
-    time: Date | string
+    start_date: Date | string
+    end_date: Date | string
     created_at?: Date | string
     updated_at?: Date | string
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
@@ -6917,11 +8459,13 @@ export namespace Prisma {
 
   export type JobUncheckedCreateWithoutClientInput = {
     id?: string
+    title: string
     description: string
     location: string
+    status?: $Enums.JobStatus
     type: $Enums.JobType
-    date: Date | string
-    time: Date | string
+    start_date: Date | string
+    end_date: Date | string
     created_at?: Date | string
     updated_at?: Date | string
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
@@ -6958,12 +8502,14 @@ export namespace Prisma {
     OR?: JobScalarWhereInput[]
     NOT?: JobScalarWhereInput | JobScalarWhereInput[]
     id?: StringFilter<"Job"> | string
-    client_id?: StringFilter<"Job"> | string
+    title?: StringFilter<"Job"> | string
     description?: StringFilter<"Job"> | string
     location?: StringFilter<"Job"> | string
+    status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
     type?: EnumJobTypeFilter<"Job"> | $Enums.JobType
-    date?: DateTimeFilter<"Job"> | Date | string
-    time?: DateTimeFilter<"Job"> | Date | string
+    start_date?: DateTimeFilter<"Job"> | Date | string
+    end_date?: DateTimeFilter<"Job"> | Date | string
+    client_id?: StringFilter<"Job"> | string
     created_at?: DateTimeFilter<"Job"> | Date | string
     updated_at?: DateTimeFilter<"Job"> | Date | string
   }
@@ -6995,7 +8541,7 @@ export namespace Prisma {
     id?: string
     created_at?: Date | string
     updated_at?: Date | string
-    worker: UserCreateNestedOneWithoutJobsInput
+    worker: WorkerCreateNestedOneWithoutJobsInput
   }
 
   export type JobAssignmentUncheckedCreateWithoutJobInput = {
@@ -7062,11 +8608,13 @@ export namespace Prisma {
 
   export type JobCreateWithoutAssignmentsInput = {
     id?: string
+    title: string
     description: string
     location: string
+    status?: $Enums.JobStatus
     type: $Enums.JobType
-    date: Date | string
-    time: Date | string
+    start_date: Date | string
+    end_date: Date | string
     created_at?: Date | string
     updated_at?: Date | string
     client: ClientCreateNestedOneWithoutJobsInput
@@ -7074,12 +8622,14 @@ export namespace Prisma {
 
   export type JobUncheckedCreateWithoutAssignmentsInput = {
     id?: string
-    client_id: string
+    title: string
     description: string
     location: string
+    status?: $Enums.JobStatus
     type: $Enums.JobType
-    date: Date | string
-    time: Date | string
+    start_date: Date | string
+    end_date: Date | string
+    client_id: string
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -7089,27 +8639,29 @@ export namespace Prisma {
     create: XOR<JobCreateWithoutAssignmentsInput, JobUncheckedCreateWithoutAssignmentsInput>
   }
 
-  export type UserCreateWithoutJobsInput = {
+  export type WorkerCreateWithoutJobsInput = {
     id?: string
     name: string
-    email: string
-    role?: $Enums.Role
+    email?: string | null
+    phone?: string | null
+    active?: boolean
     created_at?: Date | string
     updated_at?: Date | string
   }
 
-  export type UserUncheckedCreateWithoutJobsInput = {
+  export type WorkerUncheckedCreateWithoutJobsInput = {
     id?: string
     name: string
-    email: string
-    role?: $Enums.Role
+    email?: string | null
+    phone?: string | null
+    active?: boolean
     created_at?: Date | string
     updated_at?: Date | string
   }
 
-  export type UserCreateOrConnectWithoutJobsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutJobsInput, UserUncheckedCreateWithoutJobsInput>
+  export type WorkerCreateOrConnectWithoutJobsInput = {
+    where: WorkerWhereUniqueInput
+    create: XOR<WorkerCreateWithoutJobsInput, WorkerUncheckedCreateWithoutJobsInput>
   }
 
   export type JobUpsertWithoutAssignmentsInput = {
@@ -7125,11 +8677,13 @@ export namespace Prisma {
 
   export type JobUpdateWithoutAssignmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    time?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
@@ -7137,41 +8691,45 @@ export namespace Prisma {
 
   export type JobUncheckedUpdateWithoutAssignmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    client_id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    time?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    client_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserUpsertWithoutJobsInput = {
-    update: XOR<UserUpdateWithoutJobsInput, UserUncheckedUpdateWithoutJobsInput>
-    create: XOR<UserCreateWithoutJobsInput, UserUncheckedCreateWithoutJobsInput>
-    where?: UserWhereInput
+  export type WorkerUpsertWithoutJobsInput = {
+    update: XOR<WorkerUpdateWithoutJobsInput, WorkerUncheckedUpdateWithoutJobsInput>
+    create: XOR<WorkerCreateWithoutJobsInput, WorkerUncheckedCreateWithoutJobsInput>
+    where?: WorkerWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutJobsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutJobsInput, UserUncheckedUpdateWithoutJobsInput>
+  export type WorkerUpdateToOneWithWhereWithoutJobsInput = {
+    where?: WorkerWhereInput
+    data: XOR<WorkerUpdateWithoutJobsInput, WorkerUncheckedUpdateWithoutJobsInput>
   }
 
-  export type UserUpdateWithoutJobsInput = {
+  export type WorkerUpdateWithoutJobsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserUncheckedUpdateWithoutJobsInput = {
+  export type WorkerUncheckedUpdateWithoutJobsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7206,22 +8764,26 @@ export namespace Prisma {
 
   export type JobCreateManyClientInput = {
     id?: string
+    title: string
     description: string
     location: string
+    status?: $Enums.JobStatus
     type: $Enums.JobType
-    date: Date | string
-    time: Date | string
+    start_date: Date | string
+    end_date: Date | string
     created_at?: Date | string
     updated_at?: Date | string
   }
 
   export type JobUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    time?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
@@ -7229,11 +8791,13 @@ export namespace Prisma {
 
   export type JobUncheckedUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    time?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
@@ -7241,11 +8805,13 @@ export namespace Prisma {
 
   export type JobUncheckedUpdateManyWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    time?: DateTimeFieldUpdateOperationsInput | Date | string
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    end_date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7261,7 +8827,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    worker?: UserUpdateOneRequiredWithoutJobsNestedInput
+    worker?: WorkerUpdateOneRequiredWithoutJobsNestedInput
   }
 
   export type JobAssignmentUncheckedUpdateWithoutJobInput = {

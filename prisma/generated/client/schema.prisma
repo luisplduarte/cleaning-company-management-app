@@ -9,15 +9,27 @@ generator client {
 }
 
 model User {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  role       Role     @default(ADMIN)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Worker {
   id         String          @id @default(uuid())
   name       String
-  email      String          @unique
-  role       Role            @default(WORKER)
+  email      String?
+  phone      String?
+  active     Boolean         @default(true)
   created_at DateTime        @default(now())
   updated_at DateTime        @updatedAt
   jobs       JobAssignment[]
 
-  @@map("users")
+  @@map("workers")
 }
 
 model Client {
@@ -34,12 +46,14 @@ model Client {
 
 model Job {
   id          String          @id @default(uuid())
-  client_id   String
+  title       String
   description String
   location    String
+  status      JobStatus       @default(PENDING)
   type        JobType
-  date        DateTime
-  time        DateTime
+  start_date  DateTime
+  end_date    DateTime
+  client_id   String
   created_at  DateTime        @default(now())
   updated_at  DateTime        @updatedAt
   client      Client          @relation(fields: [client_id], references: [id])
@@ -55,14 +69,14 @@ model JobAssignment {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   job        Job      @relation(fields: [job_id], references: [id])
-  worker     User     @relation(fields: [worker_id], references: [id])
+  worker     Worker   @relation(fields: [worker_id], references: [id])
 
   @@map("job_assignments")
 }
 
 enum Role {
   ADMIN
-  WORKER
+  USER
 }
 
 enum JobType {
@@ -70,4 +84,11 @@ enum JobType {
   DEEP_CLEAN
   MAINTENANCE
   SPECIAL
+}
+
+enum JobStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
 }

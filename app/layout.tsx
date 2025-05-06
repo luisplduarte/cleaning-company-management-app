@@ -1,12 +1,16 @@
-import './globals.css'
-import { Inter } from 'next/font/google'
-import AuthProvider from '../components/AuthProvider'
+import { Inter } from "next/font/google"
+import { Metadata } from "next"
+import AuthProvider from "@/components/AuthProvider"
+import "@/app/globals.css"
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] })
 
-export const metadata = {
-  title: 'Cleaning Services Management',
-  description: 'Manage your cleaning service operations efficiently',
+export const metadata: Metadata = {
+  title: {
+    default: "Cleaning Company Management",
+    template: "%s | Cleaning Company Management",
+  },
+  description: "Manage your cleaning company jobs, clients, and workers.",
 }
 
 export default function RootLayout({
@@ -17,7 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )

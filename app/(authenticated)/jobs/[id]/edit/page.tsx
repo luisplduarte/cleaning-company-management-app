@@ -1,0 +1,70 @@
+import { auth } from "@/auth"
+import { redirect, notFound } from "next/navigation"
+import { prisma } from "@/lib/prisma"
+import { PageHeader } from "@/components/ui/PageHeader"
+import { Button } from "@/components/ui/Button"
+import { EditJobForm } from "@/components/jobs/JobForm"
+import { JobType, JobStatus } from "@/lib/validations/job"
+import type { Job } from "@/types/job"
+
+interface EditJobPageProps {
+  params: {
+    id: string
+  }
+}
+
+export default async function EditJobPage({ params }: EditJobPageProps) {
+  const session = await auth()
+
+  if (!session) {
+    redirect('/auth/signin')
+  }
+
+  const job = await prisma.job.findUnique({
+    where: { id: params.id },
+    include: {
+      client: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  })
+
+  if (!job) {
+    notFound()
+  }
+
+  // Convert Prisma types to our app types
+  const formattedJob: Job = {
+    id: job.id,
+    title: job.title,
+    description: job.description,
+    location: job.location,
+    type: job.type as JobType,
+    status: job.status as JobStatus,
+    start_date: job.start_date.toISOString(),
+    end_date: job.end_date.toISOString(),
+    client: job.client,
+    created_at: job.created_at,
+    updated_at: job.updated_at,
+  }
+
+  return (
+    <main className="container mx-auto py-6 px-4">
+      <PageHeader
+        title="Edit Job"
+        description="Update job details and assignments"
+      >
+        <Button href="/jobs" variant="secondary">
+          Back to Jobs
+        </Button>
+      </PageHeader>
+
+      <div className="mt-8">
+        <EditJobForm job={formattedJob} />
+      </div>
+    </main>
+  )
+}

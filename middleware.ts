@@ -1,53 +1,20 @@
-import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
-import { Role } from '@prisma/client'
+import type { NextRequest } from 'next/server'
+import { getToken } from 'next-auth/jwt'
 
-export default withAuth(
-  function middleware(req) {
-    const token = req.nextauth.token
-    const path = req.nextUrl.pathname
+export async function middleware(request: NextRequest) {
+  const token = await getToken({ req: request })
 
-    // Public paths that don't require authentication
-    if (path === '/auth/signin') {
-      return NextResponse.next()
-    }
-
-    // Check if user is authenticated
-    if (!token) {
-      return NextResponse.redirect(new URL('/auth/signin', req.url))
-    }
-
-    // Admin-only routes
-    if (
-      path.startsWith('/admin') &&
-      token.role !== Role.ADMIN
-    ) {
-      return NextResponse.redirect(new URL('/dashboard', req.url))
-    }
-
-    // Worker-specific routes
-    if (
-      path.startsWith('/worker') &&
-      token.role !== Role.WORKER
-    ) {
-      return NextResponse.redirect(new URL('/dashboard', req.url))
-    }
-
-    return NextResponse.next()
-  },
-  {
-    callbacks: {
-      authorized: ({ token }) => !!token
-    }
+  if (!token) {
+    return NextResponse.redirect(new URL('/auth/signin', request.url))
   }
-)
 
-// Specify which routes to protect
+  return NextResponse.next()
+}
+
 export const config = {
   matcher: [
-    '/dashboard/:path*',
-    '/admin/:path*',
-    '/worker/:path*',
-    '/api/:path*'
+    // Match all authenticated routes
+    '/((?!api|_next/static|_next/image|auth|favicon.ico).*)',
   ]
 }
