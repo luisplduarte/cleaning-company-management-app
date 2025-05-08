@@ -1,6 +1,5 @@
 "use client"
 
-import { Fragment } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
@@ -15,25 +14,25 @@ export function Navbar() {
   const pathname = usePathname()
 
   return (
-    <nav className="bg-white shadow">
+    <nav className="bg-primary sticky top-0 z-50 shadow-lg">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 justify-between">
           <div className="flex">
             <div className="flex flex-shrink-0 items-center">
-              <Link href="/" className="text-xl font-bold text-gray-900">
+              <Link href="/" className="text-2xl font-black text-white hover:scale-105 transition-all duration-200">
                 CleanCo
               </Link>
             </div>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <div className="hidden sm:ml-6 sm:flex sm:space-x-4">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
                   className={cn(
                     pathname === item.href
-                      ? "border-primary text-gray-900"
-                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
-                    "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium"
+                      ? "bg-white/20 text-white font-semibold"
+                      : "text-white/80 hover:bg-white/10 hover:text-white",
+                    "inline-flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:scale-105"
                   )}
                 >
                   {item.name}
@@ -44,7 +43,7 @@ export function Navbar() {
           <div className="flex items-center">
             <button
               onClick={() => signOut({ callbackUrl: "/auth/signin" })}
-              className="text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium"
+              className="bg-white/20 text-white px-6 py-2 rounded-md font-medium hover:bg-white/30 transform hover:-translate-y-0.5 transition-all duration-200 hover:shadow-md"
             >
               Sign out
             </button>
@@ -54,16 +53,16 @@ export function Navbar() {
 
       {/* Mobile menu */}
       <div className="sm:hidden">
-        <div className="space-y-1 pb-3 pt-2">
+        <div className="flex space-x-2 px-3 pb-3 pt-2">
           {navigation.map((item) => (
             <Link
               key={item.name}
               href={item.href}
               className={cn(
                 pathname === item.href
-                  ? "bg-primary/5 border-primary text-primary"
-                  : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700",
-                "block border-l-4 py-2 pl-3 pr-4 text-base font-medium"
+                  ? "bg-white/20 text-white font-semibold"
+                  : "text-white/80 hover:bg-white/10 hover:text-white",
+                "px-4 py-2 rounded-md text-base font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
               )}
             >
               {item.name}
