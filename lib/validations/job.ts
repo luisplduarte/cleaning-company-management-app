@@ -38,7 +38,18 @@ const jobBaseSchema = {
   clientId: z.string().min(1, "Client is required"),
 }
 
-export const jobFormSchema = z.object(jobBaseSchema)
+export const jobFormSchema = z.object({
+  ...jobBaseSchema,
+  start_date: z.string().min(1, "Start date and time is required"),
+  end_date: z.string().min(1, "End date and time is required"),
+}).refine(data => {
+  const start = new Date(data.start_date);
+  const end = new Date(data.end_date);
+  return end > start;
+}, {
+  message: "End date must be after start date",
+  path: ["end_date"],
+})
 
 export const jobUpdateSchema = z.object({
   ...jobBaseSchema,

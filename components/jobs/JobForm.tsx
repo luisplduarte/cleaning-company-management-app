@@ -31,8 +31,16 @@ const statusOptions: SelectOption[] = Object.entries(JobStatus).map(([value, lab
   label: label.replace('_', ' '),
 }))
 
-// Temporary until we implement client selection
-const TEST_CLIENT_ID = process.env.NEXT_PUBLIC_TEST_CLIENT_ID || "test-client-id"
+// Mock client for testing
+const MOCK_CLIENTS = [
+  { id: "mock-client-1", name: "Mock Client 1" },
+  { id: "mock-client-2", name: "Mock Client 2" },
+]
+
+const clientOptions: SelectOption[] = MOCK_CLIENTS.map(client => ({
+  value: client.id,
+  label: client.name,
+}))
 
 const initialValues: JobFormData = {
   title: "",
@@ -42,10 +50,10 @@ const initialValues: JobFormData = {
   status: JobStatus.PENDING,
   start_date: "",
   end_date: "",
-  clientId: TEST_CLIENT_ID,
+  clientId: MOCK_CLIENTS[0].id, // Default to first mock client
 }
 
-export function JobForm({ defaultValues, onSubmit, isSubmitting = false, clientId = TEST_CLIENT_ID }: JobFormProps) {
+export function JobForm({ defaultValues, onSubmit, isSubmitting = false, clientId }: JobFormProps) {
   const form = useForm<JobFormData>({
     resolver: zodResolver(jobFormSchema),
     defaultValues: {
@@ -173,8 +181,21 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false, clientI
         </FormField>
       </div>
 
-      {/* Hidden client field - will be replaced with proper client selection */}
-      <input type="hidden" {...register("clientId")} value={clientId} />
+      <FormField
+        id="clientId"
+        label="Client"
+        error={errors.clientId?.message}
+        required
+      >
+        <Select
+          {...register("clientId")}
+          options={clientOptions}
+          id="clientId"
+          placeholder="Select client"
+          error={!!errors.clientId}
+          defaultValue={clientId}
+        />
+      </FormField>
 
       <div className="flex justify-end gap-4">
         <Button 
@@ -220,12 +241,12 @@ export function EditJobForm({ job }: EditJobFormProps) {
   const formattedValues = {
     ...job,
     start_date: job.start_date instanceof Date 
-      ? job.start_date.toISOString().split('T')[0]
+      ? job.start_date.toISOString().slice(0, 16)
       : job.start_date,
     end_date: job.end_date instanceof Date 
-      ? job.end_date.toISOString().split('T')[0]
+      ? job.end_date.toISOString().slice(0, 16)
       : job.end_date,
-    clientId: job.client?.id || TEST_CLIENT_ID,
+    clientId: job.client?.id || MOCK_CLIENTS[0].id,
   }
 
   return <JobForm defaultValues={formattedValues} onSubmit={handleSubmit} />

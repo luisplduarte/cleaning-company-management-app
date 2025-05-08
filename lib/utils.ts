@@ -11,10 +11,12 @@ export function formatDate(date: Date | string): string {
   const d = typeof date === "string" ? new Date(date) : date
   if (isNaN(d.getTime())) return "-"
 
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   })
 }
 
@@ -53,16 +55,16 @@ export function generatePagination(currentPage: number, totalPages: number) {
   ]
 }
 
-export function debounce<T extends (...args: any[]) => void>(
+export function debounce<T extends (...args: unknown[]) => void>(
   func: T,
   wait: number
-): (...args: Parameters<T>) => void {
+): T {
   let timeout: NodeJS.Timeout
 
-  return (...args: Parameters<T>) => {
+  return ((...args: Parameters<T>) => {
     clearTimeout(timeout)
     timeout = setTimeout(() => func(...args), wait)
-  }
+  }) as T
 }
 
 export function capitalizeFirstLetter(string: string): string {
