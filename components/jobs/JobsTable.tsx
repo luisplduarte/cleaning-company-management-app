@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/Button"
 import { formatDate } from "@/lib/utils"
 import type { JobTableItem } from "@/types/job"
@@ -12,6 +12,7 @@ interface JobsTableProps {
 }
 
 export function JobsTable({ jobs }: JobsTableProps) {
+  const router = useRouter()
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<JobStatus | "ALL">("ALL")
 
@@ -114,12 +115,12 @@ export function JobsTable({ jobs }: JobsTableProps) {
               filteredJobs.map((job) => (
                 <tr key={job.id}>
                   <td className="whitespace-nowrap px-6 py-4">
-                    <Link
-                      href={`/jobs/${job.id}`}
+                    <button
+                      onClick={() => router.push(`/jobs/${job.id}`)}
                       className="text-sm font-medium text-primary hover:underline"
                     >
                       {job.title}
-                    </Link>
+                    </button>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
                     <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${typeBadgeColors[job.type]}`}>
@@ -147,7 +148,7 @@ export function JobsTable({ jobs }: JobsTableProps) {
                     <Button
                       variant="secondary"
                       size="sm"
-                      href={`/jobs/${job.id}/edit`}
+                      onClick={() => router.push(`/jobs/${job.id}/edit`)}
                     >
                       Edit
                     </Button>

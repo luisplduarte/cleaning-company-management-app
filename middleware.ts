@@ -12,6 +12,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/signin', request.url))
   }
 
+  // Check for admin-only routes
+  const adminRoutes = ['/clients/new']
+  if (adminRoutes.some(route => request.nextUrl.pathname.startsWith(route)) && token.role !== 'ADMIN') {
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+
   return NextResponse.next()
 }
 

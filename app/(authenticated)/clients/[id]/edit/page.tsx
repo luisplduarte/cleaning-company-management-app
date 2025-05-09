@@ -1,0 +1,59 @@
+import { auth } from "@/auth";
+import { redirect, notFound } from "next/navigation";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { EditClientForm } from "@/components/clients/EditClientForm";
+import { prisma } from "@/lib/prisma";
+
+async function getClient(id: string) {
+  const client = await prisma.client.findUnique({
+    where: { id },
+    include: {
+      user: {
+        select: {
+          email: true
+        }
+      }
+    }
+  });
+
+  if (!client) {
+    return null;
+  }
+
+  return {
+    id: client.id,
+    name: client.name,
+    userId: client.userId
+  };
+}
+
+export default async function EditClientPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const session = await auth();
+
+  if (!session || session.user.role !== "ADMIN") {
+    redirect("/");
+  }
+
+  const client = await getClient(params.id);
+
+  if (!client) {
+    notFound();
+  }
+
+  return (
+    <div className="space-y-4">
+      <PageHeader
+        title="Edit Client"
+        description={`Edit ${client.name}`}
+      />
+
+      <div className="mx-auto max-w-2xl">
+        <EditClientForm client={client} />
+      </div>
+    </div>
+  );
+}

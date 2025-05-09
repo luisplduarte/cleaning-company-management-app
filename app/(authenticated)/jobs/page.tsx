@@ -1,9 +1,8 @@
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { PageHeader } from "@/components/ui/PageHeader"
 import { JobsTable } from "@/components/jobs/JobsTable"
-import { Button } from "@/components/ui/Button"
+import { JobsHeader } from "@/components/jobs/JobsHeader"
 import { JobType, JobStatus } from "@/lib/validations/job"
 import type { JobTableItem } from "@/types/job"
 import type { Metadata } from "next"
@@ -50,14 +49,10 @@ export default async function JobsPage() {
 
   return (
     <main className="container mx-auto py-6 px-4">
-      <PageHeader
+      <JobsHeader
         title="Jobs"
         description="Manage your cleaning jobs"
-      >
-        <Button href="/jobs/new">
-          Create Job
-        </Button>
-      </PageHeader>
+      />
 
       <div className="mt-8">
         <JobsTable jobs={formattedJobs} />
