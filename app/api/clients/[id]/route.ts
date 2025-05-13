@@ -80,28 +80,57 @@ export async function DELETE(
 ) {
   try {
     const session = await auth();
+    console.log('DELETE request session:', session);
 
     if (!session) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized", { 
+        status: 401,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
     }
 
     if (session.user.role !== "ADMIN") {
-      return new NextResponse("Forbidden", { status: 403 });
+      return new NextResponse("Forbidden", { 
+        status: 403,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
     }
 
+    console.log('Attempting to delete client:', params.id);
     await prisma.client.delete({
       where: {
         id: params.id
       }
     });
+    console.log('Client deleted successfully');
 
-    return new NextResponse(null, { status: 204 });
+    return new NextResponse(JSON.stringify({ message: 'Client deleted successfully' }), { 
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   } catch (error) {
+    console.error("[CLIENT_DELETE]", error);
+    
     if (error instanceof Error && 'code' in error && error.code === "P2025") {
-      return new NextResponse("Not found", { status: 404 });
+      return new NextResponse(JSON.stringify({ error: 'Client not found' }), { 
+        status: 404,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
     }
 
-    console.error("[CLIENT_DELETE]", error);
-    return new NextResponse("Internal error", { status: 500 });
+    return new NextResponse(JSON.stringify({ error: 'Internal server error' }), { 
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
 }

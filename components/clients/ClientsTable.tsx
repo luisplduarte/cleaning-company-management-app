@@ -15,6 +15,8 @@ interface ClientsTableProps {
 export function ClientsTable({ clients, isAdmin }: ClientsTableProps) {
   const router = useRouter();
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const handleDelete = async () => {
     if (!deleteId) return;
 
@@ -23,8 +25,10 @@ export function ClientsTable({ clients, isAdmin }: ClientsTableProps) {
         method: "DELETE",
       });
 
+      const data = await response.json();
+      
       if (!response.ok) {
-        throw new Error("Failed to delete client");
+        throw new Error(data.error || "Failed to delete client");
       }
 
       toast({
@@ -32,16 +36,16 @@ export function ClientsTable({ clients, isAdmin }: ClientsTableProps) {
         message: "Client deleted successfully",
         type: "success"
       });
+      setIsDialogOpen(false);
+      setDeleteId(null);
       router.refresh();
     } catch (error) {
-      console.error(error);
+      console.error('Delete error:', error);
       toast({
         title: "Error",
         message: "Failed to delete client",
         type: "error"
       });
-    } finally {
-      setDeleteId(null);
     }
   };
 
@@ -81,14 +85,14 @@ export function ClientsTable({ clients, isAdmin }: ClientsTableProps) {
         <tbody className="bg-white divide-y divide-gray-200">
           {clients.map((client) => (
             <tr key={client.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <button
-                    onClick={() => router.push(`/clients/${client.id}`)}
-                    className="text-primary hover:underline font-medium"
-                  >
-                    {client.name}
-                  </button>
-                </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <button
+                  onClick={() => router.push(`/clients/${client.id}`)}
+                  className="text-primary hover:underline font-medium"
+                >
+                  {client.name}
+                </button>
+              </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {client.email}
               </td>
@@ -106,21 +110,28 @@ export function ClientsTable({ clients, isAdmin }: ClientsTableProps) {
                 >
                   View
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => router.push(`/clients/${client.id}/edit`)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setDeleteId(client.id)}
-                  className="text-red-600 hover:text-red-700"
-                >
-                  Delete
-                </Button>
+                {isAdmin && (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => router.push(`/clients/${client.id}/edit`)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setDeleteId(client.id);
+                        setIsDialogOpen(true);
+                      }}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      Delete
+                    </Button>
+                  </>
+                )}
               </td>
             </tr>
           ))}
@@ -128,8 +139,11 @@ export function ClientsTable({ clients, isAdmin }: ClientsTableProps) {
       </table>
 
       <ConfirmDialog
-        isOpen={!!deleteId}
-        onCancel={() => setDeleteId(null)}
+        isOpen={isDialogOpen}
+        onCancel={() => {
+          setIsDialogOpen(false);
+          setDeleteId(null);
+        }}
         onConfirm={handleDelete}
         title="Delete Client"
         message="Are you sure you want to delete this client? This action cannot be undone."

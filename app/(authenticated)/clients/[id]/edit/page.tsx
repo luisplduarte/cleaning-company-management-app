@@ -7,13 +7,6 @@ import { prisma } from "@/lib/prisma";
 async function getClient(id: string) {
   const client = await prisma.client.findUnique({
     where: { id },
-    include: {
-      user: {
-        select: {
-          email: true
-        }
-      }
-    }
   });
 
   if (!client) {
@@ -23,7 +16,11 @@ async function getClient(id: string) {
   return {
     id: client.id,
     name: client.name,
-    userId: client.userId
+    email: client.email,
+    phone: client.phone,
+    country: client.country,
+    town: client.town,
+    zipCode: client.zipCode
   };
 }
 

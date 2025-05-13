@@ -11,11 +11,6 @@ async function getClient(id: string) {
   const client = await prisma.client.findUnique({
     where: { id },
     include: {
-      user: {
-        select: {
-          email: true
-        }
-      },
       jobs: {
         orderBy: {
           start_date: 'desc'
@@ -38,7 +33,7 @@ async function getClient(id: string) {
   return {
     id: client.id,
     name: client.name,
-    email: client.user.email,
+    email: client.email,
     jobs: client.jobs.map(job => ({
       id: job.id,
       title: job.title,

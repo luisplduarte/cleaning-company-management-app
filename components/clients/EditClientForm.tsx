@@ -14,6 +14,11 @@ export function EditClientForm({ client }: EditClientFormProps) {
       clientId={client.id}
       initialData={{
         name: client.name,
+        email: client.email,
+        phone: client.phone,
+        country: client.country,
+        town: client.town,
+        zipCode: client.zipCode
       }}
     />
   )

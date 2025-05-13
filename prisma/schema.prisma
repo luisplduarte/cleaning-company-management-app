@@ -96,7 +96,7 @@ model Job {
   created_at  DateTime    @default(now())
   updated_at  DateTime    @updatedAt
   clientId    String
-  client      Client      @relation(fields: [clientId], references: [id])
+  client      Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
   assignments Assignment[]
 }
 
@@ -104,6 +104,6 @@ model Assignment {
   id       String @id @default(cuid())
   jobId    String
   workerId String
-  job      Job    @relation(fields: [jobId], references: [id])
+  job      Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
   worker   User   @relation(fields: [workerId], references: [id])
 }
