@@ -42,7 +42,7 @@ export default async function EditClientPage({
   }
 
   return (
-    <div className="space-y-4">
+    <main className="container mx-auto py-6 px-4 space-y-4">
       <PageHeader
         title="Edit Client"
         description={`Edit ${client.name}`}
@@ -51,6 +51,6 @@ export default async function EditClientPage({
       <div className="mx-auto max-w-2xl">
         <EditClientForm client={client} />
       </div>
-    </div>
+    </main>
   );
 }

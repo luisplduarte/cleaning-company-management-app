@@ -11,7 +11,7 @@ export default async function NewClientPage() {
   }
 
   return (
-    <div className="space-y-4">
+    <main className="container mx-auto py-6 px-4 space-y-4">
       <PageHeader
         title="New Client"
         description="Create a new client"
@@ -20,6 +20,6 @@ export default async function NewClientPage() {
       <div className="mx-auto max-w-2xl">
         <NewClientForm />
       </div>
-    </div>
+    </main>
   );
 }

@@ -173,8 +173,8 @@ export function ClientForm({ initialData, clientId, mode }: ClientFormProps) {
       <div className="flex justify-end space-x-2">
         <Button
           type="button"
-          variant="outline"
-          onClick={() => router.back()}
+          variant="secondary"
+          onClick={() => router.push("/clients")}
           disabled={isSubmitting}
         >
           Cancel

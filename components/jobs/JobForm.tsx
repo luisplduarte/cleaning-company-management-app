@@ -44,6 +44,7 @@ const initialValues: JobFormData = {
 }
 
 export function JobForm({ defaultValues, onSubmit, isSubmitting = false }: JobFormProps) {
+  const router = useRouter()
   const [clients, setClients] = useState<{ id: string; name: string }[]>([]);
   const [workers, setWorkers] = useState<{ id: string; name: string }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -248,6 +249,13 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false }: JobFo
 
       <div className="flex justify-end gap-4">
         <Button 
+          type="button"
+          variant="secondary"
+          onClick={() => router.push("/jobs")}
+        >
+          Cancel
+        </Button>
+        <Button 
           type="submit"
           disabled={isSubmitting}
         >
@@ -286,17 +294,17 @@ export function EditJobForm({ job }: EditJobFormProps) {
     }
   }
 
-  // Convert dates to string format for the form
+  // Format values for the form, ensuring dates are in YYYY-MM-DD format
   const formattedValues = {
     ...job,
-    start_date: job.start_date instanceof Date 
-      ? job.start_date.toISOString().slice(0, 16)
-      : job.start_date,
-    end_date: job.end_date instanceof Date 
-      ? job.end_date.toISOString().slice(0, 16)
-      : job.end_date,
+    start_date: typeof job.start_date === 'string' 
+      ? job.start_date 
+      : new Date(job.start_date).toISOString().slice(0, 16),
+    end_date: typeof job.end_date === 'string'
+      ? job.end_date
+      : new Date(job.end_date).toISOString().slice(0, 16),
     clientId: job.client?.id || "",
-    workerId: job.assignments?.[0]?.worker.id || "",
+    workerId: job.assignments?.[0]?.worker?.id || "",
   }
 
   return <JobForm defaultValues={formattedValues} onSubmit={handleSubmit} />

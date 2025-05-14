@@ -24,7 +24,7 @@ export default async function ClientsPage() {
   const clients = await getClients();
 
   return (
-    <div className="space-y-4">
+    <main className="container mx-auto py-6 px-4 space-y-4">
       <ClientsHeader
         title="Clients"
         description="Manage your clients here."
@@ -34,6 +34,6 @@ export default async function ClientsPage() {
       <Suspense fallback={<LoadingScreen />}>
         <ClientsTable clients={clients} isAdmin={session?.user.role === "ADMIN"} />
       </Suspense>
-    </div>
+    </main>
   );
 }

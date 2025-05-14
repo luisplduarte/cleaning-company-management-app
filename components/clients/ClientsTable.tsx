@@ -6,6 +6,7 @@ import { ClientTableItem } from "@/types/client";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { toast } from "@/lib/toast";
+import { FiEdit2, FiTrash2, FiEye } from "react-icons/fi";
 
 interface ClientsTableProps {
   clients: ClientTableItem[];
@@ -61,8 +62,10 @@ export function ClientsTable({ clients, isAdmin }: ClientsTableProps) {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
+    <div className="space-y-4 w-full overflow-hidden">
+      <div className="w-full border rounded-md overflow-hidden">
+        <div className="w-full overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -102,41 +105,44 @@ export function ClientsTable({ clients, isAdmin }: ClientsTableProps) {
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {`${client.town}, ${client.zipCode}, ${client.country}`}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => router.push(`/clients/${client.id}`)}
-                >
-                  View
-                </Button>
-                {isAdmin && (
-                  <>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => router.push(`/clients/${client.id}/edit`)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setDeleteId(client.id);
-                        setIsDialogOpen(true);
-                      }}
-                      className="text-red-600 hover:text-red-700"
-                    >
-                      Delete
-                    </Button>
-                  </>
-                )}
+              <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => router.push(`/clients/${client.id}`)}
+                  >
+                    <FiEye className="h-4 w-4" />
+                  </Button>
+                  {isAdmin && (
+                    <>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => router.push(`/clients/${client.id}/edit`)}
+                      >
+                        <FiEdit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          setDeleteId(client.id);
+                          setIsDialogOpen(true);
+                        }}
+                      >
+                        <FiTrash2 className="h-4 w-4" />
+                      </Button>
+                    </>
+                  )}
+                </div>
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
+          </table>
+        </div>
+      </div>
 
       <ConfirmDialog
         isOpen={isDialogOpen}

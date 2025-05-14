@@ -1,7 +1,10 @@
+"use client";
+
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { prisma } from "@/lib/prisma";
+import { FiEdit2, FiEye } from "react-icons/fi";
 
 interface WorkerPageProps {
   params: {
@@ -31,17 +34,14 @@ export default async function WorkerPage({ params }: WorkerPageProps) {
   }
 
   return (
-    <div className="container py-6">
+    <main className="container mx-auto py-6 px-4">
       <PageHeader 
         title={worker.name}
         description="Worker details"
       >
         <div className="flex gap-2">
-          <Button href={`/workers/${id}/edit`} variant="ghost" size="sm">
-            Edit
-          </Button>
-          <Button href="/workers" variant="ghost" size="sm">
-            Back to Workers
+          <Button href={`/workers/${id}/edit`} variant="secondary" size="sm">
+            <FiEdit2 className="h-4 w-4" />
           </Button>
         </div>
       </PageHeader>
@@ -118,10 +118,10 @@ export default async function WorkerPage({ params }: WorkerPageProps) {
                         <td className="px-6 py-4 whitespace-nowrap text-right">
                           <Button
                             href={`/jobs/${assignment.job.id}`}
-                            variant="ghost"
+                            variant="secondary"
                             size="sm"
                           >
-                            View
+                            <FiEye className="h-4 w-4" />
                           </Button>
                         </td>
                       </tr>
@@ -133,6 +133,6 @@ export default async function WorkerPage({ params }: WorkerPageProps) {
           )}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

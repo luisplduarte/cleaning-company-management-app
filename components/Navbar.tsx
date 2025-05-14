@@ -16,7 +16,7 @@ export function Navbar() {
   const pathname = usePathname()
 
   return (
-    <nav className="bg-primary sticky top-0 z-50 shadow-lg">
+    <nav className="bg-blue-700 sticky top-0 z-50 shadow-lg">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 justify-between">
           <div className="flex">
@@ -30,12 +30,12 @@ export function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={cn(
-                    pathname === item.href
-                      ? "bg-white/20 text-white font-semibold"
-                      : "text-white/80 hover:bg-white/10 hover:text-white",
-                    "inline-flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:scale-105"
-                  )}
+              className={cn(
+                pathname === item.href
+                  ? "bg-white text-blue-700 font-semibold"
+                  : "bg-blue-600 text-white hover:bg-white hover:text-blue-700",
+                "inline-flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:scale-105"
+              )}
                 >
                   {item.name}
                 </Link>
@@ -45,7 +45,7 @@ export function Navbar() {
           <div className="flex items-center">
             <button
               onClick={() => signOut({ callbackUrl: "/auth/signin" })}
-              className="bg-white/20 text-white px-6 py-2 rounded-md font-medium hover:bg-white/30 transform hover:-translate-y-0.5 transition-all duration-200 hover:shadow-md"
+              className="bg-red-600 text-white px-6 py-2 rounded-md font-medium hover:bg-red-700 transform hover:-translate-y-0.5 transition-all duration-200 hover:shadow-md"
             >
               Sign out
             </button>
@@ -62,8 +62,8 @@ export function Navbar() {
               href={item.href}
               className={cn(
                 pathname === item.href
-                  ? "bg-white/20 text-white font-semibold"
-                  : "text-white/80 hover:bg-white/10 hover:text-white",
+                  ? "bg-white text-blue-700 font-semibold"
+                  : "bg-blue-600 text-white hover:bg-white hover:text-blue-700",
                 "px-4 py-2 rounded-md text-base font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
               )}
             >

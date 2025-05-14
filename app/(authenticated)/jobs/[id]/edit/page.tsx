@@ -2,7 +2,6 @@ import { auth } from "@/auth"
 import { redirect, notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { PageHeader } from "@/components/ui/PageHeader"
-import { Button } from "@/components/ui/Button"
 import { EditJobForm } from "@/components/jobs/JobForm"
 import { JobType, JobStatus } from "@/lib/validations/job"
 import type { Job } from "@/types/job"
@@ -29,6 +28,16 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
           name: true,
         },
       },
+      assignments: {
+        include: {
+          worker: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
     },
   })
 
@@ -44,9 +53,10 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
     location: job.location,
     type: job.type as JobType,
     status: job.status as JobStatus,
-    start_date: job.start_date.toISOString(),
-    end_date: job.end_date.toISOString(),
+    start_date: new Date(job.start_date).toISOString().slice(0, 16),
+    end_date: new Date(job.end_date).toISOString().slice(0, 16),
     client: job.client,
+    assignments: job.assignments,
     created_at: job.created_at,
     updated_at: job.updated_at,
   }
@@ -56,11 +66,7 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
       <PageHeader
         title="Edit Job"
         description="Update job details and assignments"
-      >
-        <Button href="/jobs" variant="secondary">
-          Back to Jobs
-        </Button>
-      </PageHeader>
+      />
 
       <div className="mt-8">
         <EditJobForm job={formattedJob} />

@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/Button"
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
+import { FiEdit2, FiTrash2, FiEye } from "react-icons/fi"
 import { formatDate } from "@/lib/utils"
 import type { JobTableItem } from "@/types/job"
 import { JobType, JobStatus } from "@/lib/validations/job"
@@ -15,6 +17,8 @@ export function JobsTable({ jobs }: JobsTableProps) {
   const router = useRouter()
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<JobStatus | "ALL">("ALL")
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [jobToDelete, setJobToDelete] = useState<string | null>(null)
 
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
@@ -49,7 +53,7 @@ export function JobsTable({ jobs }: JobsTableProps) {
     type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full overflow-hidden">
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex-1">
           <input
@@ -74,8 +78,9 @@ export function JobsTable({ jobs }: JobsTableProps) {
         </select>
       </div>
 
-      <div className="rounded-md border">
-        <table className="min-w-full divide-y divide-gray-200">
+      <div className="w-full border rounded-md overflow-hidden">
+        <div className="w-full overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
@@ -114,13 +119,8 @@ export function JobsTable({ jobs }: JobsTableProps) {
             ) : (
               filteredJobs.map((job) => (
                 <tr key={job.id}>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <button
-                      onClick={() => router.push(`/jobs/${job.id}`)}
-                      className="text-sm font-medium text-primary hover:underline"
-                    >
-                      {job.title}
-                    </button>
+                  <td className="whitespace-nowrap px-6 py-4 text-sm">
+                    {job.title}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
                     <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${typeBadgeColors[job.type]}`}>
@@ -145,19 +145,67 @@ export function JobsTable({ jobs }: JobsTableProps) {
                     {job.client?.name || '-'}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => router.push(`/jobs/${job.id}/edit`)}
-                    >
-                      Edit
-                    </Button>
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => router.push(`/jobs/${job.id}`)}
+                      >
+                        <FiEye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => router.push(`/jobs/${job.id}/edit`)}
+                      >
+                        <FiEdit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          setJobToDelete(job.id)
+                          setIsDeleteDialogOpen(true)
+                        }}
+                      >
+                        <FiTrash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))
             )}
           </tbody>
-        </table>
+          </table>
+          <ConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        title="Delete Job"
+        message="Are you sure you want to delete this job? This action cannot be undone."
+        onConfirm={async () => {
+          if (jobToDelete) {
+            try {
+              const response = await fetch(`/api/jobs/${jobToDelete}`, {
+                method: "DELETE",
+              })
+
+              if (!response.ok) {
+                throw new Error("Failed to delete job")
+              }
+
+              router.refresh()
+            } catch (error) {
+              console.error("Error deleting job:", error)
+            }
+          }
+          setIsDeleteDialogOpen(false)
+          setJobToDelete(null)
+        }}
+        onCancel={() => {
+          setIsDeleteDialogOpen(false)
+          setJobToDelete(null)
+        }}
+      />
+    </div>
       </div>
     </div>
   )

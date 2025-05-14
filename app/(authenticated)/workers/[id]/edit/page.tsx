@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import EditWorkerForm from "@/components/workers/EditWorkerForm";
 
@@ -21,19 +20,15 @@ export default async function EditWorkerPage({ params }: EditWorkerPageProps) {
   }
 
   return (
-    <div className="container py-6">
+    <main className="container mx-auto py-6 px-4">
       <PageHeader 
         title="Edit Worker" 
         description="Update worker information"
-      >
-        <Button href={`/workers/${id}`} variant="ghost" size="sm">
-          Cancel
-        </Button>
-      </PageHeader>
+      />
 
       <div className="mt-8">
         <EditWorkerForm worker={worker} />
       </div>
-    </div>
+    </main>
   );
 }

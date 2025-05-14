@@ -11,11 +11,11 @@ export default async function WorkersPage() {
   });
 
   return (
-    <div className="container py-6">
+    <main className="container mx-auto py-6 px-4">
       <WorkersHeader />
       <div className="mt-8">
         <WorkersTable workers={workers as WorkerTableItem[]} />
       </div>
-    </div>
+    </main>
   );
 }

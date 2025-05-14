@@ -21,7 +21,7 @@ export function ClientsHeader({ title, description, isAdmin }: ClientsHeaderProp
       />
       {isAdmin && (
         <Button onClick={() => router.push("/clients/new")}>
-          Add Client
+          Create Client
         </Button>
       )}
     </div>

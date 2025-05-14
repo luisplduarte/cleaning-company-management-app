@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "@/lib/toast";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { FiEdit2, FiTrash2, FiEye } from "react-icons/fi";
 import type { WorkerTableItem } from "@/types/worker";
 
 interface WorkersTableProps {
@@ -12,7 +13,9 @@ interface WorkersTableProps {
 }
 
 export function WorkersTable({ workers }: WorkersTableProps) {
+  const router = useRouter();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  
   async function deleteWorker(id: string) {
     try {
       const response = await fetch(`/api/workers/${id}`, {
@@ -28,7 +31,7 @@ export function WorkersTable({ workers }: WorkersTableProps) {
         message: "Worker deleted successfully",
         type: "success"
       });
-      window.location.reload();
+      router.refresh();
     } catch (error) {
       toast({
         title: "Error",
@@ -50,64 +53,70 @@ export function WorkersTable({ workers }: WorkersTableProps) {
   }
 
   return (
-    <div className="rounded-md border">
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Email
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Phone
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Location
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {workers.map((worker) => (
-              <tr key={worker.id}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <Link
-                    href={`/workers/${worker.id}`}
-                    className="text-blue-600 hover:text-blue-900"
-                  >
-                    {worker.name}
-                  </Link>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">{worker.email}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{worker.phone}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {`${worker.town}, ${worker.country}`}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                  <Button
-                    href={`/workers/${worker.id}/edit`}
-                    variant="ghost"
-                    size="sm"
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setDeletingId(worker.id)}
-                  >
-                    Delete
-                  </Button>
-                </td>
+    <div className="space-y-4 w-full overflow-hidden">
+      <div className="w-full border rounded-md overflow-hidden">
+        <div className="w-full overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Email
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Phone
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Location
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {workers.map((worker) => (
+                <tr key={worker.id}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    {worker.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{worker.email}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{worker.phone}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {`${worker.town}, ${worker.country}`}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => router.push(`/workers/${worker.id}`)}
+                      >
+                        <FiEye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => router.push(`/workers/${worker.id}/edit`)}
+                      >
+                        <FiEdit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setDeletingId(worker.id)}
+                      >
+                        <FiTrash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <ConfirmDialog

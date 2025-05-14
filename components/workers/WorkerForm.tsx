@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
@@ -13,6 +14,7 @@ interface WorkerFormProps {
 }
 
 export default function WorkerForm({ initialData, onSubmit, isSubmitting }: WorkerFormProps) {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -98,9 +100,19 @@ export default function WorkerForm({ initialData, onSubmit, isSubmitting }: Work
         />
       </FormField>
 
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Saving..." : "Save Worker"}
-      </Button>
+      <div className="flex justify-end gap-4">
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => router.push("/workers")}
+          disabled={isSubmitting}
+        >
+          Cancel
+        </Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Saving..." : "Save Worker"}
+        </Button>
+      </div>
     </form>
   );
 }
