@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -13,12 +13,12 @@ import { Select } from "@/components/ui/Select"
 import { Textarea } from "@/components/ui/Textarea"
 import { DatePicker } from "@/components/ui/DatePicker"
 import { FormField } from "@/components/ui/FormField"
+import { Spinner } from "@/components/ui/Spinner"
 
 interface JobFormProps {
   defaultValues?: Partial<JobFormData>
   onSubmit: (data: JobFormData) => void | Promise<void>
   isSubmitting?: boolean
-  clientId?: string
 }
 
 const typeOptions: SelectOption[] = Object.entries(JobType).map(([value, label]) => ({
@@ -31,17 +31,6 @@ const statusOptions: SelectOption[] = Object.entries(JobStatus).map(([value, lab
   label: label.replace('_', ' '),
 }))
 
-// Mock client for testing
-const MOCK_CLIENTS = [
-  { id: "mock-client-1", name: "Mock Client 1" },
-  { id: "mock-client-2", name: "Mock Client 2" },
-]
-
-const clientOptions: SelectOption[] = MOCK_CLIENTS.map(client => ({
-  value: client.id,
-  label: client.name,
-}))
-
 const initialValues: JobFormData = {
   title: "",
   description: "",
@@ -50,17 +39,56 @@ const initialValues: JobFormData = {
   status: JobStatus.PENDING,
   start_date: "",
   end_date: "",
-  clientId: MOCK_CLIENTS[0].id, // Default to first mock client
+  clientId: "",
+  workerId: "",
 }
 
-export function JobForm({ defaultValues, onSubmit, isSubmitting = false, clientId }: JobFormProps) {
+export function JobForm({ defaultValues, onSubmit, isSubmitting = false }: JobFormProps) {
+  const [clients, setClients] = useState<{ id: string; name: string }[]>([]);
+  const [workers, setWorkers] = useState<{ id: string; name: string }[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [clientsRes, workersRes] = await Promise.all([
+          fetch('/api/clients'),
+          fetch('/api/workers')
+        ]);
+
+        if (!clientsRes.ok || !workersRes.ok) {
+          throw new Error('Failed to fetch data');
+        }
+
+        const [clientsData, workersData] = await Promise.all([
+          clientsRes.json(),
+          workersRes.json()
+        ]);
+
+        setClients(clientsData);
+        setWorkers(workersData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const clientOptions: SelectOption[] = clients.map(client => ({
+    value: client.id,
+    label: client.name,
+  }));
+
+  const workerOptions: SelectOption[] = workers.map(worker => ({
+    value: worker.id,
+    label: worker.name,
+  }));
   const form = useForm<JobFormData>({
     resolver: zodResolver(jobFormSchema),
-    defaultValues: {
-      ...initialValues,
-      ...defaultValues,
-      clientId: clientId,
-    },
+    defaultValues: defaultValues || initialValues,
   })
 
   const {
@@ -72,12 +100,9 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false, clientI
 
   useEffect(() => {
     if (defaultValues) {
-      reset({
-        ...defaultValues,
-        clientId: clientId,
-      })
+      reset(defaultValues)
     }
-  }, [defaultValues, clientId, reset])
+  }, [defaultValues, reset])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -181,21 +206,45 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false, clientI
         </FormField>
       </div>
 
-      <FormField
-        id="clientId"
-        label="Client"
-        error={errors.clientId?.message}
-        required
-      >
-        <Select
-          {...register("clientId")}
-          options={clientOptions}
-          id="clientId"
-          placeholder="Select client"
-          error={!!errors.clientId}
-          defaultValue={clientId}
-        />
-      </FormField>
+      {isLoading ? (
+        <div className="flex justify-center py-4">
+          <Spinner />
+        </div>
+      ) : (
+        <>
+          <FormField
+            id="clientId"
+            label="Client"
+            error={errors.clientId?.message}
+            required
+          >
+            <Select
+              {...register("clientId")}
+              options={clientOptions}
+              id="clientId"
+              placeholder="Select client..."
+              error={!!errors.clientId}
+              disabled={isLoading}
+            />
+          </FormField>
+
+          <FormField
+            id="workerId"
+            label="Worker"
+            error={errors.workerId?.message}
+            required
+          >
+            <Select
+              {...register("workerId")}
+              options={workerOptions}
+              id="workerId"
+              placeholder="Select worker..."
+              error={!!errors.workerId}
+              disabled={isLoading}
+            />
+          </FormField>
+        </>
+      )}
 
       <div className="flex justify-end gap-4">
         <Button 
@@ -205,7 +254,7 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false, clientI
           {isSubmitting ? "Saving..." : "Save"}
         </Button>
       </div>
-    </form>
+  </form>
   )
 }
 
@@ -246,7 +295,8 @@ export function EditJobForm({ job }: EditJobFormProps) {
     end_date: job.end_date instanceof Date 
       ? job.end_date.toISOString().slice(0, 16)
       : job.end_date,
-    clientId: job.client?.id || MOCK_CLIENTS[0].id,
+    clientId: job.client?.id || "",
+    workerId: job.assignments?.[0]?.worker.id || "",
   }
 
   return <JobForm defaultValues={formattedValues} onSubmit={handleSubmit} />

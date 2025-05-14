@@ -36,6 +36,7 @@ const jobBaseSchema = {
   start_date: z.string().min(1, "Start date is required"),
   end_date: z.string().min(1, "End date is required"),
   clientId: z.string().min(1, "Client is required"),
+  workerId: z.string().min(1, "Worker is required"),
 }
 
 export const jobFormSchema = z.object({
@@ -67,4 +68,5 @@ export const defaultJobValues: JobFormData = {
   start_date: "",
   end_date: "",
   clientId: "", // This will need to be set when we implement client selection
+  workerId: "", // This will need to be set when we implement worker selection
 }

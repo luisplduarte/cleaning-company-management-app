@@ -28,6 +28,30 @@ export async function POST(req: NextRequest) {
         start_date: new Date(body.start_date),
         end_date: new Date(body.end_date),
         clientId: body.clientId,
+        assignments: {
+          create: {
+            workerId: body.workerId,
+          },
+        },
+      },
+      include: {
+        client: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        assignments: {
+          select: {
+            id: true,
+            worker: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
       },
     })
 

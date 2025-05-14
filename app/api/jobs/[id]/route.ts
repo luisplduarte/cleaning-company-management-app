@@ -34,6 +34,11 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       )
     }
 
+    // Get current assignment if it exists
+    const currentAssignment = await prisma.assignment.findFirst({
+      where: { jobId: params.id },
+    });
+
     // Convert string dates to Date objects
     const data = {
       ...body,
@@ -41,10 +46,56 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       end_date: body.end_date ? new Date(body.end_date) : undefined,
     }
 
-    const updatedJob = await prisma.job.update({
-      where: { id: params.id },
-      data,
-    })
+    // Start a transaction to handle job and assignment updates
+    const updatedJob = await prisma.$transaction(async (tx) => {
+      // Update the job
+      const job = await tx.job.update({
+        where: { id: params.id },
+        data,
+      });
+
+      // If worker is being updated
+      if (body.workerId) {
+        // Delete existing assignment if it exists
+        if (currentAssignment) {
+          await tx.assignment.delete({
+            where: { id: currentAssignment.id },
+          });
+        }
+
+        // Create new assignment
+        await tx.assignment.create({
+          data: {
+            jobId: params.id,
+            workerId: body.workerId,
+          },
+        });
+      }
+
+      // Return updated job with relationships
+      return await tx.job.findUnique({
+        where: { id: params.id },
+        include: {
+          client: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          assignments: {
+            select: {
+              id: true,
+              worker: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    });
 
     return Response.json(updatedJob)
   } catch (error) {
