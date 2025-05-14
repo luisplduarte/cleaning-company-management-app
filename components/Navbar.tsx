@@ -9,6 +9,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard" },
   { name: "Jobs", href: "/jobs" },
   { name: "Clients", href: "/clients" },
+  { name: "Workers", href: "/workers" },
 ]
 
 export function Navbar() {
