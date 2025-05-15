@@ -32,36 +32,34 @@ const CalendarHeader = ({
   const end = endOfWeek(currentDate, { weekStartsOn: 1 });
 
   return (
-    <div className="flex items-center justify-between p-4 border-b">
-      <div className="flex items-center space-x-4">
+    <div className="flex items-center p-4 border-b">
+      <button
+        onClick={onTodayClick}
+        className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+      >
+        Today
+      </button>
+      <div className="flex items-center justify-center flex-1 space-x-4">
         <button
-          onClick={onTodayClick}
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+          onClick={onPrevWeek}
+          className="p-2 hover:bg-gray-100 rounded-full"
         >
-          Today
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
         </button>
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={onPrevWeek}
-            className="p-2 hover:bg-gray-100 rounded-full"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-            </svg>
-          </button>
-          <button
-            onClick={onNextWeek}
-            className="p-2 hover:bg-gray-100 rounded-full"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
-          </button>
-        </div>
+        <h2 className="text-lg font-semibold">
+          {format(start, 'MMM d')} – {format(end, 'MMM d, yyyy')}
+        </h2>
+        <button
+          onClick={onNextWeek}
+          className="p-2 hover:bg-gray-100 rounded-full"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
       </div>
-      <h2 className="text-lg font-semibold">
-        {format(start, 'MMM d')} – {format(end, 'MMM d, yyyy')}
-      </h2>
     </div>
   );
 };
@@ -178,7 +176,7 @@ const Calendar = () => {
               key={day}
               className="flex-1 border-r last:border-r-0"
             >
-              <div className="sticky top-0 z-10 h-12 px-2 py-2 text-sm font-medium text-gray-500 bg-white border-b mb-2">
+              <div className="sticky top-0 z-10 h-12 px-2 text-sm font-medium text-gray-500 bg-white border-b">
                 <div className="text-sm">{format(day, 'EEE')}</div>
                 <div className="text-xl font-semibold text-gray-900">
                   {format(day, 'd')}

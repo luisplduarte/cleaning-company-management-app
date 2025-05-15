@@ -5,17 +5,12 @@ const CalendarSkeleton = () => {
   return (
     <div className="flex flex-col h-full bg-white border rounded-lg shadow-sm animate-pulse">
       {/* Header */}
-      <div className="p-4 border-b">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="w-20 h-8 bg-gray-200 rounded-md" />
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gray-200 rounded-full" />
-              <div className="w-8 h-8 bg-gray-200 rounded-full" />
-            </div>
-          </div>
+      <div className="flex items-center p-4 border-b">
+        <div className="w-20 h-8 bg-gray-200 rounded-md" />
+        <div className="flex items-center justify-center flex-1 space-x-4">
+          <div className="w-8 h-8 bg-gray-200 rounded-full" />
           <div className="w-32 h-6 bg-gray-200 rounded" />
-          <div className="w-24 h-8 bg-gray-200 rounded-md" />
+          <div className="w-8 h-8 bg-gray-200 rounded-full" />
         </div>
       </div>
 
