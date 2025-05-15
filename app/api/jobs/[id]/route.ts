@@ -39,17 +39,17 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       where: { jobId: params.id },
     });
 
-    // Convert string dates to Date objects
+    // Convert dates to ISO format
     const data = {
       ...body,
-      start_date: body.start_date ? new Date(body.start_date) : undefined,
-      end_date: body.end_date ? new Date(body.end_date) : undefined,
+      start_date: body.start_date ? new Date(body.start_date + ':00').toISOString() : undefined,
+      end_date: body.end_date ? new Date(body.end_date + ':00').toISOString() : undefined,
     }
 
     // Start a transaction to handle job and assignment updates
     const updatedJob = await prisma.$transaction(async (tx) => {
-      // Update the job
-      const job = await tx.job.update({
+      // Update the job (this update is needed before other operations)
+      await tx.job.update({
         where: { id: params.id },
         data,
       });

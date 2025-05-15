@@ -41,20 +41,59 @@ const jobBaseSchema = {
 
 export const jobFormSchema = z.object({
   ...jobBaseSchema,
-  start_date: z.string().min(1, "Start date and time is required"),
-  end_date: z.string().min(1, "End date and time is required"),
+  start_date: z.string()
+    .min(1, "Start date and time is required")
+    .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, "Invalid datetime format"),
+  end_date: z.string()
+    .min(1, "End date and time is required")
+    .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, "Invalid datetime format"),
 }).refine(data => {
-  const start = new Date(data.start_date);
-  const end = new Date(data.end_date);
-  return end > start;
+  try {
+    const start = new Date(data.start_date);
+    const end = new Date(data.end_date);
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return false;
+    }
+    return end > start;
+  } catch {
+    return false;
+  }
 }, {
-  message: "End date must be after start date",
+  message: "End date must be after start date and dates must be valid",
   path: ["end_date"],
 })
 
 export const jobUpdateSchema = z.object({
-  ...jobBaseSchema,
-}).partial()
+  title: z.string().min(1, "Title is required").optional(),
+  description: z.string().min(1, "Description is required").optional(),
+  location: z.string().min(1, "Location is required").optional(),
+  type: z.nativeEnum(JobType, {
+    required_error: "Job type is required",
+    invalid_type_error: "Invalid job type",
+  }).optional(),
+  status: z.nativeEnum(JobStatus, {
+    required_error: "Status is required",
+    invalid_type_error: "Invalid status",
+  }).optional(),
+  start_date: z.string()
+    .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, "Invalid datetime format")
+    .optional(),
+  end_date: z.string()
+    .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, "Invalid datetime format")
+    .optional(),
+  clientId: z.string().min(1, "Client is required").optional(),
+  workerId: z.string().min(1, "Worker is required").optional(),
+}).refine(data => {
+  if (data.start_date && data.end_date) {
+    const start = new Date(data.start_date);
+    const end = new Date(data.end_date);
+    return end > start;
+  }
+  return true;
+}, {
+  message: "End date must be after start date",
+  path: ["end_date"],
+})
 
 export type JobFormData = z.infer<typeof jobFormSchema>
 export type JobUpdateData = z.infer<typeof jobUpdateSchema>

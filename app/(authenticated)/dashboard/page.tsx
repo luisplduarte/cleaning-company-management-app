@@ -1,27 +1,13 @@
-import { Metadata } from "next"
-import { auth } from "@/auth"
-import { redirect } from "next/navigation"
+import Calendar from '@/components/calendar/Calendar';
+import { PageHeader } from '@/components/ui/PageHeader';
 
-export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "Overview of your cleaning company operations.",
-}
-
-export default async function DashboardPage() {
-  const session = await auth()
-
-  if (!session) {
-    redirect('/auth/signin')
-  }
-
+export default function DashboardPage() {
   return (
-    <main className="container mx-auto py-6 px-4">
-      <div className="space-y-6">
-        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Welcome to your cleaning company management dashboard.
-        </p>
+    <div className="space-y-6 p-6">
+      <PageHeader title="Dashboard" description="View and manage your jobs" />
+      <div className="h-[calc(100vh-12rem)]">
+        <Calendar />
       </div>
-    </main>
-  )
+    </div>
+  );
 }

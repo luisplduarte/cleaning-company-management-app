@@ -25,8 +25,8 @@ export async function POST(req: NextRequest) {
         location: body.location,
         type: body.type,
         status: body.status,
-        start_date: new Date(body.start_date),
-        end_date: new Date(body.end_date),
+        start_date: new Date(body.start_date + ':00').toISOString(), // Add seconds before converting
+        end_date: new Date(body.end_date + ':00').toISOString(),     // Add seconds before converting
         clientId: body.clientId,
         assignments: {
           create: {
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const session = await auth()
 

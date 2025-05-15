@@ -294,15 +294,15 @@ export function EditJobForm({ job }: EditJobFormProps) {
     }
   }
 
-  // Format values for the form, ensuring dates are in YYYY-MM-DD format
-  const formattedValues = {
-    ...job,
-    start_date: typeof job.start_date === 'string' 
-      ? job.start_date 
-      : new Date(job.start_date).toISOString().slice(0, 16),
-    end_date: typeof job.end_date === 'string'
-      ? job.end_date
-      : new Date(job.end_date).toISOString().slice(0, 16),
+    // Format values for the form, preserving local timezone
+    const formattedValues = {
+      ...job,
+      start_date: typeof job.start_date === 'string' 
+        ? job.start_date.slice(0, 16) // Remove seconds and timezone
+        : new Date(job.start_date).toLocaleString('sv').replace(' ', 'T').slice(0, 16),
+      end_date: typeof job.end_date === 'string'
+        ? job.end_date.slice(0, 16) // Remove seconds and timezone
+        : new Date(job.end_date).toLocaleString('sv').replace(' ', 'T').slice(0, 16),
     clientId: job.client?.id || "",
     workerId: job.assignments?.[0]?.worker?.id || "",
   }
