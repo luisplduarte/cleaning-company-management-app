@@ -19,13 +19,13 @@ export function Navbar() {
     <nav className="bg-blue-700 sticky top-0 z-50 shadow-lg">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 justify-between">
-          <div className="flex">
+          <div className="flex flex-1">
             <div className="flex flex-shrink-0 items-center">
               <Link href="/" className="text-2xl font-black text-white hover:scale-105 transition-all duration-200">
                 CleanCo
               </Link>
             </div>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-4">
+            <div className="hidden sm:ml-6 sm:flex sm:space-x-4 py-3 sm:justify-center flex-grow">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
