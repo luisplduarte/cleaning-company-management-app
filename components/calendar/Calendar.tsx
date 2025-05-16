@@ -187,7 +187,7 @@ const Calendar = () => {
                   {Array.from({ length: 19 }, (_, i) => (
                     <div
                       key={i}
-                      className="h-16 border-b border-gray-100"
+                      className="h-16 border-b border-l"
                     />
                   ))}
                 </div>
