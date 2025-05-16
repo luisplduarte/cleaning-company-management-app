@@ -28,16 +28,17 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    const { id } = await params;
     const json = await req.json();
     const body = updateWorkerSchema.parse(json);
 
     const worker = await prisma.worker.update({
-      where: { id: params.id },
+      where: { id },
       data: body,
     });
 
     revalidatePath("/workers");
-    revalidatePath(`/workers/${params.id}`);
+    revalidatePath(`/workers/${id}`);
     return Response.json(worker);
   } catch (error) {
     console.error("[WORKER_PUT]", error);

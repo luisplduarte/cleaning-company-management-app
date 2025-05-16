@@ -9,6 +9,7 @@ export type WorkerResponse = {
   country: string;
   town: string;
   zipCode: string;
+  hourly_rate: number;
 };
 
 export type WorkerFormData = z.infer<typeof createWorkerSchema>;
@@ -21,4 +22,5 @@ export type WorkerTableItem = {
   country: string;
   town: string;
   zipCode: string;
+  hourly_rate: number;
 };

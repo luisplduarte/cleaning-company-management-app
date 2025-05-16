@@ -100,6 +100,21 @@ export default function WorkerForm({ initialData, onSubmit, isSubmitting }: Work
         />
       </FormField>
 
+      <FormField
+        id="hourly_rate"
+        label="Hourly Rate"
+        error={errors.hourly_rate?.message}
+      >
+        <Input
+          id="hourly_rate"
+          type="number"
+          step="0.01"
+          min="0"
+          placeholder="Enter hourly rate"
+          {...register("hourly_rate")}
+        />
+      </FormField>
+
       <div className="flex justify-end gap-4">
         <Button
           type="button"

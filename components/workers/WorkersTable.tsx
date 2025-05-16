@@ -71,6 +71,9 @@ export function WorkersTable({ workers }: WorkersTableProps) {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Location
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Hourly Rate
+                </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
@@ -86,6 +89,9 @@ export function WorkersTable({ workers }: WorkersTableProps) {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{worker.phone}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {`${worker.town}, ${worker.country}`}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ${worker.hourly_rate.toFixed(2)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                     <div className="flex justify-end gap-2">

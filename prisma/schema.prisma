@@ -105,6 +105,7 @@ model Worker {
   country     String
   town        String
   zipCode     String
+  hourly_rate Decimal      @default(0) @db.Decimal(10, 2)
   assignments Assignment[]
 }
 
