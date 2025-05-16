@@ -10,6 +10,11 @@ export async function GET(
   try {
     const worker = await prisma.worker.findUnique({
       where: { id: params.id },
+      include: {
+        rate_history: {
+          orderBy: { changed_at: 'desc' }
+        }
+      }
     });
 
     if (!worker) {
@@ -32,9 +37,40 @@ export async function PUT(
     const json = await req.json();
     const body = updateWorkerSchema.parse(json);
 
-    const worker = await prisma.worker.update({
+    // Get current worker data to check if rate changed
+    const currentWorker = await prisma.worker.findUnique({
       where: { id },
-      data: body,
+      select: { hourly_rate: true }
+    });
+
+    if (!currentWorker) {
+      return new Response("Worker not found", { status: 404 });
+    }
+
+    const worker = await prisma.$transaction(async (tx) => {
+      // Update worker
+      const updatedWorker = await tx.worker.update({
+        where: { id },
+        data: body,
+        include: {
+          rate_history: {
+            orderBy: { changed_at: 'desc' }
+          }
+        }
+      });
+
+      // If hourly rate changed, create history entry
+      if (Number(body.hourly_rate) !== Number(currentWorker.hourly_rate)) {
+        await tx.workerRateHistory.create({
+          data: {
+            worker_id: id,
+            old_rate: currentWorker.hourly_rate,
+            new_rate: body.hourly_rate,
+          }
+        });
+      }
+
+      return updatedWorker;
     });
 
     revalidatePath("/workers");

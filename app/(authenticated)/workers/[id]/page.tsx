@@ -20,6 +20,11 @@ export default async function WorkerPage({ params }: WorkerPageProps) {
             }
           }
         }
+      },
+      rate_history: {
+        orderBy: {
+          changed_at: 'desc'
+        }
       }
     }
   });
@@ -28,10 +33,16 @@ export default async function WorkerPage({ params }: WorkerPageProps) {
     notFound();
   }
 
-  // Convert Decimal to number for client component
+  // Convert Decimal values to numbers for client component
   const workerData = {
     ...worker,
-    hourly_rate: Number(worker.hourly_rate)
+    hourly_rate: Number(worker.hourly_rate),
+    rate_history: worker.rate_history.map(history => ({
+      ...history,
+      old_rate: Number(history.old_rate),
+      new_rate: Number(history.new_rate),
+      changed_at: history.changed_at.toISOString()
+    }))
   };
 
   return <WorkerDetails worker={workerData} />;

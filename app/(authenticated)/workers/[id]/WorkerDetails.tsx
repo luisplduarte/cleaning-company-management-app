@@ -2,11 +2,13 @@
 
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { WorkerRateHistory } from "@/components/workers/WorkerRateHistory";
 import { FiEdit2, FiEye } from "react-icons/fi";
 import type { Worker } from "@prisma/client";
+import type { WorkerRateHistoryItem } from "@/types/worker";
 
 // Omit hourly_rate from Worker type and add it back as number
-interface WorkerWithAssignments extends Omit<Worker, 'hourly_rate'> {
+interface WorkerWithAssignmentsAndHistory extends Omit<Worker, 'hourly_rate'> {
   hourly_rate: number;
   assignments: Array<{
     id: string;
@@ -19,10 +21,11 @@ interface WorkerWithAssignments extends Omit<Worker, 'hourly_rate'> {
       };
     };
   }>;
+  rate_history: WorkerRateHistoryItem[];
 }
 
 interface WorkerDetailsProps {
-  worker: WorkerWithAssignments;
+  worker: WorkerWithAssignmentsAndHistory;
 }
 
 export function WorkerDetails({ worker }: WorkerDetailsProps) {
@@ -53,6 +56,8 @@ export function WorkerDetails({ worker }: WorkerDetailsProps) {
             </div>
           </div>
         </div>
+
+        <WorkerRateHistory rateHistory={worker.rate_history} />
 
         <div className="grid gap-4">
           <h2 className="text-xl font-semibold">Location</h2>
