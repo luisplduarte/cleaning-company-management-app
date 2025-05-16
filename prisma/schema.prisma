@@ -116,3 +116,12 @@ model Assignment {
   job      Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
   worker   Worker @relation(fields: [workerId], references: [id], onDelete: Cascade)
 }
+
+model Rate {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  value       Decimal  @db.Decimal(10, 2)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}

@@ -10,6 +10,7 @@ const navigation = [
   { name: "Jobs", href: "/jobs" },
   { name: "Clients", href: "/clients" },
   { name: "Workers", href: "/workers" },
+  { name: "Rates", href: "/rates" },
 ]
 
 export function Navbar() {
