@@ -4,18 +4,20 @@ import { paymentUpdateSchema } from "@/lib/validations/payment";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
+    const { id } = context.params;
     const body = await request.json();
     const validatedData = paymentUpdateSchema.parse(body);
 
     const payment = await prisma.clientPayment.update({
       where: {
-        id: params.id,
+        id: id,
       },
       data: {
         status: validatedData.status,
+        payment_date: validatedData.status === "COMPLETED" ? new Date() : null,
       },
       include: {
         client: {

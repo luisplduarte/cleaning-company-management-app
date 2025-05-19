@@ -64,6 +64,7 @@ export const jobFormSchema = z.object({
 })
 
 export const jobUpdateSchema = z.object({
+  currentStatus: z.nativeEnum(JobStatus).optional(),
   id: z.string().optional(),
   title: z.string().min(1, "Title is required").optional(),
   description: z.string().min(1, "Description is required").optional(),
@@ -91,7 +92,16 @@ export const jobUpdateSchema = z.object({
   return true;
 }, {
   message: "End date must be after start date",
-  path: ["end_date"],
+    path: ["end_date"],
+}).refine((data: { currentStatus?: JobStatus; status?: JobStatus }) => {
+  if (data.currentStatus && data.status) {
+    const allowedTransitions = statusTransitions[data.currentStatus];
+    return allowedTransitions.includes(data.status);
+  }
+  return true;
+}, {
+  message: "Invalid status transition",
+  path: ["status"],
 })
 
 export type JobFormData = z.infer<typeof jobFormSchema>

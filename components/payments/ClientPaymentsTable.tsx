@@ -2,10 +2,14 @@
 
 import { useEffect, useState } from "react"
 import { ClientPayment, PaymentStatus } from "@/types/payment"
+import { Button } from "../ui/Button"
+import { FiEdit2, FiCheck, FiX } from "react-icons/fi"
 
 export default function ClientPaymentsTable() {
   const [payments, setPayments] = useState<ClientPayment[]>([])
   const [loading, setLoading] = useState(true)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editingStatus, setEditingStatus] = useState<PaymentStatus | null>(null)
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -63,6 +67,9 @@ export default function ClientPaymentsTable() {
               Amount
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Payment Date
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Status
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -83,18 +90,64 @@ export default function ClientPaymentsTable() {
                 ${Number(payment.amount).toFixed(2)}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {payment.status}
+                {payment.payment_date ? new Date(payment.payment_date).toLocaleDateString() : "-"}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <select
-                  value={payment.status}
-                  onChange={(e) => handleStatusChange(payment.id, e.target.value as PaymentStatus)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                >
-                  <option value="WAITING_PAYMENT">Waiting Payment</option>
-                  <option value="ISSUED">Issued</option>
-                  <option value="COMPLETED">Completed</option>
-                </select>
+                {editingId === payment.id ? (
+                  <select
+                    value={editingStatus || payment.status}
+                    onChange={(e) => setEditingStatus(e.target.value as PaymentStatus)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  >
+                    <option value="WAITING_PAYMENT">Waiting Payment</option>
+                    <option value="ISSUED">Issued</option>
+                    <option value="COMPLETED">Completed</option>
+                  </select>
+                ) : (
+                  <span>{payment.status}</span>
+                )}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <div className="flex gap-2 justify-end">
+                  {editingId === payment.id ? (
+                    <>
+                      <Button
+                        onClick={async () => {
+                          if (editingStatus) {
+                            await handleStatusChange(payment.id, editingStatus)
+                            setEditingStatus(null)
+                          }
+                          setEditingId(null)
+                        }}
+                        variant="secondary"
+                        size="sm"
+                      >
+                        <FiCheck className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setEditingStatus(null)
+                          setEditingId(null)
+                        }}
+                        variant="secondary"
+                        size="sm"
+                      >
+                        <FiX className="h-4 w-4" />
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        setEditingStatus(payment.status)
+                        setEditingId(payment.id)
+                      }}
+                      variant="secondary"
+                      size="sm"
+                    >
+                      <FiEdit2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </td>
             </tr>
           ))}

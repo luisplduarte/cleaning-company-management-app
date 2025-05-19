@@ -42,7 +42,7 @@ export async function POST(req: Request) {
         id: authData.user.id,
         email: validatedData.email,
         name: validatedData.name,
-        role: "WORKER"
+        role: "ADMIN"
       }
     })
 

@@ -27,6 +27,7 @@ export type ClientPayment = {
   job_id: string;
   amount: number;
   status: PaymentStatus;
+  payment_date: Date | null;
   created_at: Date;
   updated_at: Date;
   client: {

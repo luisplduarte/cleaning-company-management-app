@@ -273,24 +273,35 @@ interface EditJobFormProps {
 export function EditJobForm({ job }: EditJobFormProps) {
   const router = useRouter()
 
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = async (data: JobFormData) => {
     try {
+      setIsSubmitting(true);
+      setError(null);
+
       const response = await fetch(`/api/jobs/${job.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      })
+      });
+
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error("Failed to update job")
+        throw new Error(result.error || "Failed to update job");
       }
 
-      router.refresh()
-      router.push("/jobs")
+      router.refresh();
+      router.push("/jobs");
     } catch (error) {
-      console.error("Error updating job:", error)
+      console.error("Error updating job:", error);
+      setError(error instanceof Error ? error.message : "Failed to update job");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -307,32 +318,67 @@ export function EditJobForm({ job }: EditJobFormProps) {
     workerId: job.assignments?.[0]?.worker?.id || "",
   }
 
-  return <JobForm defaultValues={formattedValues} onSubmit={handleSubmit} />
+  return (
+    <div className="space-y-4">
+      {error && (
+        <div className="rounded-md bg-red-50 p-4">
+          <div className="text-sm text-red-700">{error}</div>
+        </div>
+      )}
+      <JobForm 
+        defaultValues={formattedValues} 
+        onSubmit={handleSubmit} 
+        isSubmitting={isSubmitting}
+      />
+    </div>
+  )
 }
 
 export function NewJobForm() {
   const router = useRouter()
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (data: JobFormData) => {
     try {
+      setIsSubmitting(true);
+      setError(null);
+
       const response = await fetch("/api/jobs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      })
+      });
+
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error("Failed to create job")
+        throw new Error(result.error || "Failed to create job");
       }
 
-      router.refresh()
-      router.push("/jobs")
+      router.refresh();
+      router.push("/jobs");
     } catch (error) {
-      console.error("Error creating job:", error)
+      console.error("Error creating job:", error);
+      setError(error instanceof Error ? error.message : "Failed to create job");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
-  return <JobForm onSubmit={handleSubmit} />
+  return (
+    <div className="space-y-4">
+      {error && (
+        <div className="rounded-md bg-red-50 p-4">
+          <div className="text-sm text-red-700">{error}</div>
+        </div>
+      )}
+      <JobForm 
+        onSubmit={handleSubmit} 
+        isSubmitting={isSubmitting}
+      />
+    </div>
+  )
 }
