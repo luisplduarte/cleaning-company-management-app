@@ -1,23 +1,33 @@
-import { NextRequest } from "next/server"
-import { auth } from "@/auth"
-import { prisma } from "@/lib/prisma"
-import { jobFormSchema } from "@/lib/validations/job"
+import { NextRequest } from "next/server";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { jobFormSchema, JobStatus } from "@/lib/validations/job";
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth()
+    const session = await auth();
 
     if (!session) {
       return Response.json(
         { error: "Not authenticated" },
         { status: 401 }
-      )
+      );
     }
 
-    const json = await req.json()
-    const body = jobFormSchema.parse(json)
+    const json = await req.json();
+    const body = jobFormSchema.parse(json);
 
-    // Convert string dates to Date objects
+    // Ensure new jobs start with PENDING status
+    if (body.status !== JobStatus.PENDING) {
+      return Response.json(
+        { error: "New jobs must have PENDING status" },
+        { status: 400 }
+      );
+    }
+
+    const startDate = new Date(body.start_date + ':00');
+    const endDate = new Date(body.end_date + ':00');
+
     const job = await prisma.job.create({
       data: {
         title: body.title,
@@ -25,8 +35,8 @@ export async function POST(req: NextRequest) {
         location: body.location,
         type: body.type,
         status: body.status,
-        start_date: new Date(body.start_date + ':00').toISOString(), // Add seconds before converting
-        end_date: new Date(body.end_date + ':00').toISOString(),     // Add seconds before converting
+        start_date: startDate,
+        end_date: endDate,
         clientId: body.clientId,
         assignments: {
           create: {
@@ -53,15 +63,15 @@ export async function POST(req: NextRequest) {
           },
         },
       },
-    })
+    });
 
-    return Response.json(job)
+    return Response.json(job);
   } catch (error) {
-    console.error("Error creating job:", error)
+    console.error("Error creating job:", error);
     return Response.json(
       { error: "Something went wrong" },
       { status: 500 }
-    )
+    );
   }
 }
 

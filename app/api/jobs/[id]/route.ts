@@ -1,161 +1,123 @@
-import { NextRequest } from "next/server"
-import { auth } from "@/auth"
-import { prisma } from "@/lib/prisma"
-import { jobUpdateSchema } from "@/lib/validations/job"
+import { NextRequest } from "next/server";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { jobUpdateSchema, statusTransitions, JobStatus } from "@/lib/validations/job";
 
-interface RouteParams {
-  params: {
-    id: string
-  }
-}
-
-export async function PATCH(req: NextRequest, { params }: RouteParams) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const session = await auth()
+    const session = await auth();
 
     if (!session) {
       return Response.json(
         { error: "Not authenticated" },
         { status: 401 }
-      )
+      );
     }
 
-    const json = await req.json()
-    const body = jobUpdateSchema.parse(json)
+    const json = await req.json();
+    const body = jobUpdateSchema.parse(json);
 
-    const existingJob = await prisma.job.findUnique({
+    // Check current job status
+    const currentJob = await prisma.job.findUnique({
       where: { id: params.id },
-    })
+    });
 
-    if (!existingJob) {
+    if (!currentJob) {
       return Response.json(
         { error: "Job not found" },
         { status: 404 }
-      )
+      );
     }
 
-    // Get current assignment if it exists
-    const currentAssignment = await prisma.assignment.findFirst({
-      where: { jobId: params.id },
-    });
-
-    // Convert dates to ISO format
-    const data = {
-      ...body,
-      start_date: body.start_date ? new Date(body.start_date + ':00').toISOString() : undefined,
-      end_date: body.end_date ? new Date(body.end_date + ':00').toISOString() : undefined,
+    // Validate status transition
+    if (body.status) {
+      const allowedTransitions = statusTransitions[currentJob.status];
+      if (!allowedTransitions.includes(body.status)) {
+        return Response.json(
+          { error: `Cannot transition from ${currentJob.status} to ${body.status}` },
+          { status: 400 }
+        );
+      }
     }
 
-    // Start a transaction to handle job and assignment updates
-    const updatedJob = await prisma.$transaction(async (tx) => {
-      // Update the job (this update is needed before other operations)
-      await tx.job.update({
+    // If status is being updated to COMPLETED, create payment records
+    if (body.status === JobStatus.COMPLETED) {
+      const job = await prisma.job.findUnique({
         where: { id: params.id },
-        data,
+        include: {
+          assignments: {
+            include: {
+              worker: true,
+            },
+          },
+          client: true,
+        },
       });
 
-      // If worker is being updated
-      if (body.workerId) {
-        // Delete existing assignment if it exists
-        if (currentAssignment) {
-          await tx.assignment.delete({
-            where: { id: currentAssignment.id },
-          });
-        }
+      if (!job) {
+        return Response.json(
+          { error: "Job not found" },
+          { status: 404 }
+        );
+      }
 
-        // Create new assignment
-        await tx.assignment.create({
+      // Get profit margin rate
+      const profitMarginRate = await prisma.rate.findFirst({
+        where: { name: "Company Profit Margin" },
+      });
+
+      if (!profitMarginRate) {
+        return Response.json(
+          { error: "Profit margin rate not found" },
+          { status: 500 }
+        );
+      }
+
+      // Calculate job duration in hours
+      const durationHours = (job.end_date.getTime() - job.start_date.getTime()) / (1000 * 60 * 60);
+
+      // For each worker assigned to the job
+      for (const assignment of job.assignments) {
+        const workerPaymentAmount = Number(assignment.worker.hourly_rate) * durationHours;
+        const clientPaymentAmount = workerPaymentAmount * (1 + Number(profitMarginRate.value));
+
+        // Create worker payment record
+        await prisma.workerPayment.create({
           data: {
-            jobId: params.id,
-            workerId: body.workerId,
+            worker_id: assignment.worker.id,
+            job_id: job.id,
+            amount: workerPaymentAmount,
+          },
+        });
+
+        // Create client payment record
+        await prisma.clientPayment.create({
+          data: {
+            client_id: job.client.id,
+            job_id: job.id,
+            amount: clientPaymentAmount,
           },
         });
       }
-
-      // Return updated job with relationships
-      return await tx.job.findUnique({
-        where: { id: params.id },
-        include: {
-          client: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          assignments: {
-            select: {
-              id: true,
-              worker: {
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
-            },
-          },
-        },
-      });
-    });
-
-    return Response.json(updatedJob)
-  } catch (error) {
-    console.error("Error updating job:", error)
-    return Response.json(
-      { error: "Something went wrong" },
-      { status: 500 }
-    )
-  }
-}
-
-export async function DELETE(req: NextRequest, { params }: RouteParams) {
-  try {
-    const session = await auth()
-
-    if (!session) {
-      return Response.json(
-        { error: "Not authenticated" },
-        { status: 401 }
-      )
     }
 
-    const existingJob = await prisma.job.findUnique({
+    // Format data for Prisma update
+    const formattedData = {
+      title: body.title,
+      description: body.description,
+      location: body.location,
+      type: body.type,
+      status: body.status,
+      start_date: body.start_date ? new Date(body.start_date + ':00').toISOString() : undefined,
+      end_date: body.end_date ? new Date(body.end_date + ':00').toISOString() : undefined,
+    };
+
+    const updatedJob = await prisma.job.update({
       where: { id: params.id },
-    })
-
-    if (!existingJob) {
-      return Response.json(
-        { error: "Job not found" },
-        { status: 404 }
-      )
-    }
-
-    await prisma.job.delete({
-      where: { id: params.id },
-    })
-
-    return new Response(null, { status: 204 })
-  } catch (error) {
-    console.error("Error deleting job:", error)
-    return Response.json(
-      { error: "Something went wrong" },
-      { status: 500 }
-    )
-  }
-}
-
-export async function GET(req: NextRequest, { params }: RouteParams) {
-  try {
-    const session = await auth()
-
-    if (!session) {
-      return Response.json(
-        { error: "Not authenticated" },
-        { status: 401 }
-      )
-    }
-
-    const job = await prisma.job.findUnique({
-      where: { id: params.id },
+      data: formattedData,
       include: {
         client: {
           select: {
@@ -175,21 +137,14 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
           },
         },
       },
-    })
+    });
 
-    if (!job) {
-      return Response.json(
-        { error: "Job not found" },
-        { status: 404 }
-      )
-    }
-
-    return Response.json(job)
+    return Response.json(updatedJob);
   } catch (error) {
-    console.error("Error fetching job:", error)
+    console.error("Error updating job:", error);
     return Response.json(
       { error: "Something went wrong" },
       { status: 500 }
-    )
+    );
   }
 }

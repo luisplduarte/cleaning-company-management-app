@@ -24,6 +24,12 @@ enum JobStatus {
   CANCELLED
 }
 
+enum PaymentStatus {
+  WAITING_PAYMENT
+  ISSUED
+  COMPLETED
+}
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -71,30 +77,33 @@ model VerificationToken {
 }
 
 model Client {
-  id       String @id @default(cuid())
-  name     String
-  email    String
-  phone    String
-  country  String
-  town     String
-  zipCode  String
-  jobs     Job[]
+  id            String          @id @default(cuid())
+  name          String
+  email         String
+  phone         String
+  country       String
+  town          String
+  zipCode       String
+  jobs          Job[]
+  payments      ClientPayment[]
 }
 
 model Job {
-  id          String      @id @default(cuid())
-  title       String
-  description String
-  location    String
-  type        JobType
-  status      JobStatus   @default(PENDING)
-  start_date  DateTime
-  end_date    DateTime
-  created_at  DateTime    @default(now())
-  updated_at  DateTime    @updatedAt
-  clientId    String
-  client      Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  assignments Assignment[]
+  id             String          @id @default(cuid())
+  title          String
+  description    String
+  location       String
+  type           JobType
+  status         JobStatus       @default(PENDING)
+  start_date     DateTime
+  end_date       DateTime
+  created_at     DateTime        @default(now())
+  updated_at     DateTime        @updatedAt
+  clientId       String
+  client         Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  assignments    Assignment[]
+  workerPayments WorkerPayment[]
+  clientPayments ClientPayment[]
 }
 
 model Worker {
@@ -108,6 +117,7 @@ model Worker {
   hourly_rate   Decimal            @default(0) @db.Decimal(10, 2)
   assignments   Assignment[]
   rate_history  WorkerRateHistory[]
+  payments      WorkerPayment[]
 }
 
 model Assignment {
@@ -134,4 +144,28 @@ model Rate {
   value       Decimal  @db.Decimal(10, 2)
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
+}
+
+model WorkerPayment {
+  id          String        @id @default(cuid())
+  worker_id   String
+  job_id      String
+  amount      Decimal       @db.Decimal(10, 2)
+  status      PaymentStatus @default(WAITING_PAYMENT)
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  worker      Worker        @relation(fields: [worker_id], references: [id], onDelete: Cascade)
+  job         Job          @relation(fields: [job_id], references: [id], onDelete: Cascade)
+}
+
+model ClientPayment {
+  id          String        @id @default(cuid())
+  client_id   String
+  job_id      String
+  amount      Decimal       @db.Decimal(10, 2)
+  status      PaymentStatus @default(WAITING_PAYMENT)
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  client      Client        @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  job         Job          @relation(fields: [job_id], references: [id], onDelete: Cascade)
 }

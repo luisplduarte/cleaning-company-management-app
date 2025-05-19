@@ -64,6 +64,7 @@ export const jobFormSchema = z.object({
 })
 
 export const jobUpdateSchema = z.object({
+  id: z.string().optional(),
   title: z.string().min(1, "Title is required").optional(),
   description: z.string().min(1, "Description is required").optional(),
   location: z.string().min(1, "Location is required").optional(),
@@ -81,9 +82,7 @@ export const jobUpdateSchema = z.object({
   end_date: z.string()
     .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, "Invalid datetime format")
     .optional(),
-  clientId: z.string().min(1, "Client is required").optional(),
-  workerId: z.string().min(1, "Worker is required").optional(),
-}).refine(data => {
+}).refine((data) => {
   if (data.start_date && data.end_date) {
     const start = new Date(data.start_date);
     const end = new Date(data.end_date);

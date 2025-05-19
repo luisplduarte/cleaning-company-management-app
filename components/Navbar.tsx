@@ -11,6 +11,8 @@ const navigation = [
   { name: "Clients", href: "/clients" },
   { name: "Workers", href: "/workers" },
   { name: "Rates", href: "/rates" },
+  { name: "Worker Payments", href: "/worker-payments" },
+  { name: "Client Payments", href: "/client-payments" },
 ]
 
 export function Navbar() {
