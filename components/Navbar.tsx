@@ -4,15 +4,35 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
 import { cn } from "@/lib/utils"
+import { Dropdown } from "@/components/ui/Dropdown"
 
-const navigation = [
+type NavItem = {
+  name: string;
+  href?: string;
+  type?: 'dropdown';
+  items?: Array<{ name: string; href: string }>;
+}
+
+const navigation: NavItem[] = [
   { name: "Dashboard", href: "/dashboard" },
   { name: "Jobs", href: "/jobs" },
-  { name: "Clients", href: "/clients" },
-  { name: "Workers", href: "/workers" },
   { name: "Rates", href: "/rates" },
-  { name: "Worker Payments", href: "/worker-payments" },
-  { name: "Client Payments", href: "/client-payments" },
+  {
+    name: "Clients",
+    type: "dropdown",
+    items: [
+      { name: "Clients List", href: "/clients" },
+      { name: "Client Payments", href: "/client-payments" }
+    ]
+  },
+  {
+    name: "Workers",
+    type: "dropdown",
+    items: [
+      { name: "Workers List", href: "/workers" },
+      { name: "Worker Payments", href: "/worker-payments" }
+    ]
+  },
 ]
 
 export function Navbar() {
@@ -30,18 +50,32 @@ export function Navbar() {
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-4 py-3 sm:justify-center flex-grow">
               {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-              className={cn(
-                pathname === item.href
-                  ? "bg-white text-blue-700 font-semibold"
-                  : "bg-blue-600 text-white hover:bg-white hover:text-blue-700",
-                "inline-flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:scale-105"
-              )}
-                >
-                  {item.name}
-                </Link>
+                item.type === 'dropdown' ? (
+                  <Dropdown
+                    key={item.name}
+                    label={item.name}
+                    items={item.items || []}
+                    buttonClassName={cn(
+                      "bg-blue-600 text-white hover:bg-white hover:text-blue-700",
+                      "px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:scale-105 h-[38px]"
+                    )}
+                    menuClassName="bg-blue-600 py-1 min-w-[160px] z-50"
+                    itemClassName="px-4 py-2 text-sm transition-colors duration-200"
+                  />
+                ) : (
+                  <Link
+                    key={item.name}
+                    href={item.href!}
+                    className={cn(
+                      pathname === item.href
+                        ? "bg-white text-blue-700 font-semibold"
+                        : "bg-blue-600 text-white hover:bg-white hover:text-blue-700",
+                      "inline-flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:scale-105 h-[38px]"
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                )
               ))}
             </div>
           </div>
@@ -60,18 +94,32 @@ export function Navbar() {
       <div className="sm:hidden">
         <div className="flex space-x-2 px-3 pb-3 pt-2">
           {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                pathname === item.href
-                  ? "bg-white text-blue-700 font-semibold"
-                  : "bg-blue-600 text-white hover:bg-white hover:text-blue-700",
-                "px-4 py-2 rounded-md text-base font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-              )}
-            >
-              {item.name}
-            </Link>
+            item.type === 'dropdown' ? (
+              <Dropdown
+                key={item.name}
+                label={item.name}
+                items={item.items || []}
+                buttonClassName={cn(
+                  "bg-blue-600 text-white hover:bg-white hover:text-blue-700",
+                  "px-4 py-2 rounded-md text-base font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] h-[42px]"
+                )}
+                menuClassName="bg-blue-600 py-1 min-w-[160px] z-50"
+                itemClassName="px-4 py-2 text-base transition-colors duration-200"
+              />
+            ) : (
+              <Link
+                key={item.name}
+                href={item.href!}
+                className={cn(
+                  pathname === item.href
+                    ? "bg-white text-blue-700 font-semibold"
+                    : "bg-blue-600 text-white hover:bg-white hover:text-blue-700",
+                  "px-4 py-2 rounded-md text-base font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] h-[42px]"
+                )}
+              >
+                {item.name}
+              </Link>
+            )
           ))}
         </div>
       </div>
