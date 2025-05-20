@@ -68,6 +68,9 @@ export default function WorkerPaymentsTable() {
               Amount
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Payment Date
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Status
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -86,6 +89,9 @@ export default function WorkerPaymentsTable() {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 ${Number(payment.amount).toFixed(2)}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {payment.payment_date ? new Date(payment.payment_date).toLocaleDateString() : "-"}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {editingId === payment.id ? (

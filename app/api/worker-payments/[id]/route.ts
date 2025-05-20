@@ -16,6 +16,7 @@ export async function PATCH(
       },
       data: {
         status: validatedData.status,
+        payment_date: validatedData.status === "COMPLETED" ? new Date() : null,
       },
       include: {
         worker: {

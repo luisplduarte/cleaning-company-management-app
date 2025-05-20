@@ -128,6 +128,7 @@ model WorkerPayment {
   job_id     String
   amount     Decimal       @db.Decimal(10, 2)
   status     PaymentStatus @default(WAITING_PAYMENT)
+  payment_date DateTime?
   created_at DateTime      @default(now())
   updated_at DateTime      @updatedAt
   job        Job           @relation(fields: [job_id], references: [id], onDelete: Cascade)
