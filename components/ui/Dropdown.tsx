@@ -47,10 +47,14 @@ export function Dropdown({
   }, [pathname]);
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div 
+      className="relative" 
+      ref={dropdownRef}
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
       <button
         onClick={() => setIsOpen(!isOpen)}
-        onMouseEnter={() => setIsOpen(true)}
         className={cn(
           "inline-flex items-center gap-1",
           buttonClassName
@@ -77,7 +81,6 @@ export function Dropdown({
 
       {isOpen && (
         <div
-          onMouseLeave={() => setIsOpen(false)}
           className={cn(
             "absolute left-0 mt-1 origin-top-left rounded-md shadow-lg",
             menuClassName
