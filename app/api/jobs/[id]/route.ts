@@ -69,16 +69,27 @@ export async function PATCH(
         );
       }
 
-      // Get profit margin rate
-      const profitMarginRate = await prisma.rate.findFirst({
-        where: { name: "Company Profit Margin" },
+      // Get or create profit margin rate
+      let profitMarginRate = await prisma.rate.findFirst({
+        where: {
+          name: "Company Profit Margin",
+          is_system: true
+        },
       });
 
       if (!profitMarginRate) {
-        return Response.json(
-          { error: "Profit margin rate not found" },
-          { status: 500 }
-        );
+        const defaultProfitMargin = 20; // 20% default margin if not configured
+        console.warn(`Profit margin rate not found, using default value of ${defaultProfitMargin}%`);
+        
+        // Create the default profit margin rate
+        profitMarginRate = await prisma.rate.create({
+          data: {
+            name: "Company Profit Margin",
+            description: "Default profit margin applied to all jobs",
+            value: defaultProfitMargin,
+            is_system: true,
+          },
+        });
       }
 
       // Calculate job duration in hours

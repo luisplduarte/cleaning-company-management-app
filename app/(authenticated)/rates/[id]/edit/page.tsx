@@ -1,29 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/lib/toast";
 import { PageHeader } from "@/components/ui/PageHeader";
 import RateForm from "@/components/rates/RateForm";
-import type { CreateRateInput } from "@/types/rate";
+import type { CreateRateInput, SystemRateInput } from "@/types/rate";
 import { Spinner } from "@/components/ui/Spinner";
 
 interface Props {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function EditRatePage({ params }: Props) {
   const router = useRouter();
+  const { id } = use(params);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [rate, setRate] = useState<CreateRateInput | null>(null);
+  const [rate, setRate] = useState<(CreateRateInput & { is_system?: boolean }) | null>(null);
 
   useEffect(() => {
     async function loadRate() {
       try {
-        const response = await fetch(`/api/rates/${params.id}`);
+        const response = await fetch(`/api/rates/${id}`);
         if (!response.ok) {
           throw new Error("Failed to load rate");
         }
@@ -42,13 +43,20 @@ export default function EditRatePage({ params }: Props) {
     }
 
     loadRate();
-  }, [params.id]);
+  }, [id]);
 
-  async function handleSubmit(data: CreateRateInput) {
+  async function handleSubmit(data: CreateRateInput | SystemRateInput) {
     try {
       setIsSubmitting(true);
-      const response = await fetch(`/api/rates/${params.id}`, {
-        method: "PUT",
+
+      let endpoint = `/api/rates/${id}`;
+      if (rate?.is_system) {
+        // Use system rate endpoint for system rates
+        endpoint = `/api/rates/system/profit-margin`;
+      }
+
+      const response = await fetch(endpoint, {
+        method: rate?.is_system ? "PATCH" : "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -56,7 +64,8 @@ export default function EditRatePage({ params }: Props) {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to update rate");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update rate");
       }
 
       toast({
@@ -101,6 +110,7 @@ export default function EditRatePage({ params }: Props) {
           initialData={rate} 
           onSubmit={handleSubmit}
           isSubmitting={isSubmitting}
+          isSystemRate={rate.is_system}
         />
       </div>
     </div>

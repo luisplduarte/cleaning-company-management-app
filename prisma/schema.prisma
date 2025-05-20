@@ -115,9 +115,10 @@ model WorkerRateHistory {
 
 model Rate {
   id          String   @id @default(cuid())
-  name        String
+  name        String   @unique
   description String
   value       Decimal  @db.Decimal(10, 2)
+  is_system   Boolean  @default(false)
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 }

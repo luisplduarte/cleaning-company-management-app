@@ -8,8 +8,9 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    const { id } = await params;
     const rate = await prisma.rate.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!rate) {
@@ -29,6 +30,26 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
+
+    // Check if this is a system rate
+    const existingRate = await prisma.rate.findUnique({
+      where: { id },
+    });
+
+    if (!existingRate) {
+      return Response.json(
+        { error: "Rate not found" },
+        { status: 404 }
+      );
+    }
+
+    if (existingRate.is_system) {
+      return Response.json(
+        { error: "System rates cannot be modified through this endpoint. Use the dedicated system rate API instead." },
+        { status: 403 }
+      );
+    }
+
     const json = await req.json();
     const body = updateRateSchema.parse(json);
 
@@ -51,8 +72,28 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    const { id } = await params;
+    
+    const rate = await prisma.rate.findUnique({
+      where: { id },
+    });
+
+    if (!rate) {
+      return Response.json(
+        { error: "Rate not found" },
+        { status: 404 }
+      );
+    }
+
+    if (rate.is_system) {
+      return Response.json(
+        { error: "System rates cannot be deleted" },
+        { status: 403 }
+      );
+    }
+
     await prisma.rate.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     revalidatePath("/rates");
