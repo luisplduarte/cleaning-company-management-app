@@ -2,13 +2,14 @@ import { NextRequest } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { jobUpdateSchema, statusTransitions, JobStatus, JobType } from "@/lib/validations/job";
+import { sendJobCompletionEmail } from "@/lib/email";
 
 export async function PATCH(
   req: NextRequest,
   context: { params: { id: string } }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
     const session = await auth();
 
     if (!session) {
@@ -110,6 +111,16 @@ export async function PATCH(
           job_id: job.id,
           amount: clientPaymentAmount,
         },
+      });
+
+      // Send email notification to client
+      await sendJobCompletionEmail({
+        clientEmail: job.client.email,
+        jobTitle: job.title,
+        jobLocation: job.location,
+        startDate: job.start_date,
+        endDate: job.end_date,
+        amount: Number(clientPaymentAmount)
       });
     }
 
