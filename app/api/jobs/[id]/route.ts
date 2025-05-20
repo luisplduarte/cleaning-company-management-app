@@ -102,7 +102,7 @@ export async function PATCH(
       }
 
       // Calculate client payment based on total worker payments
-      const clientPaymentAmount = totalWorkerPayments * (1 + Number(profitMarginRate.value));
+      const clientPaymentAmount = totalWorkerPayments * (1 + Number(profitMarginRate.value) / 100);
 
       // Create single client payment record
       await prisma.clientPayment.create({
