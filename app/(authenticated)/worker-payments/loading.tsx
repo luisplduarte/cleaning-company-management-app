@@ -1,4 +1,4 @@
-import { Spinner } from "@/components/ui/Spinner"
+import { Spinner } from "@/components/ui/elements/spinner/Spinner"
 
 export default function WorkerPaymentsLoading() {
   return (

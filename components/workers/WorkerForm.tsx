@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/Button";
-import { FormField } from "@/components/ui/FormField";
-import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/elements/button/Button";
+import { FormField } from "@/components/ui/molecules/form-field/FormField";
+import { Input } from "@/components/ui/elements/input/Input";
 import { WorkerFormData } from "@/types/worker";
 import { createWorkerSchema } from "@/lib/validations/worker";
 

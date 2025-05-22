@@ -1,10 +1,10 @@
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { JobsTable } from "@/components/jobs/JobsTable"
-import { JobsHeader } from "@/components/jobs/JobsHeader"
-import { JobType, JobStatus } from "@/lib/validations/job"
-import type { JobTableItem } from "@/types/job"
+import { JobsTable } from "./components/JobsTable"
+import { JobsHeader } from "./components/JobsHeader"
+import { JobType, JobStatus } from "./utils/job"
+import type { JobTableItem } from "./types"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -24,12 +24,7 @@ export default async function JobsPage() {
       created_at: 'desc',
     },
     include: {
-      client: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
+      client: true,
     },
   })
 

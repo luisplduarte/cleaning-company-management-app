@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { PageHeader } from "@/components/ui/PageHeader";
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader";
 import { NewClientForm } from "@/components/clients/NewClientForm";
 
 export default async function NewClientPage() {

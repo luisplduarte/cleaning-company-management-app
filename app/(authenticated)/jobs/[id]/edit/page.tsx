@@ -1,10 +1,10 @@
 import { auth } from "@/auth"
 import { redirect, notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { PageHeader } from "@/components/ui/PageHeader"
-import { EditJobForm } from "@/components/jobs/JobForm"
-import { JobType, JobStatus } from "@/lib/validations/job"
-import type { Job } from "@/types/job"
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader"
+import { EditJobForm } from "../../components/JobForm"
+import { JobType, JobStatus } from "../../utils/job"
+import type { Job } from "../../types"
 
 interface EditJobPageProps {
   params: {
@@ -22,20 +22,10 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
   const job = await prisma.job.findUnique({
     where: { id: params.id },
     include: {
-      client: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
+      client: true,
       assignments: {
         include: {
-          worker: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
+          worker: true,
         },
       },
     },

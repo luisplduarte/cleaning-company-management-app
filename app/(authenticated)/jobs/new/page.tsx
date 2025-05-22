@@ -1,7 +1,7 @@
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
-import { PageHeader } from "@/components/ui/PageHeader"
-import { NewJobForm } from "@/components/jobs/JobForm"
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader"
+import { NewJobForm } from "../components/JobForm"
 
 export default async function NewJobPage() {
   const session = await auth()

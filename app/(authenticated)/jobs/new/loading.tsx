@@ -1,6 +1,6 @@
-import { PageHeader } from "@/components/ui/PageHeader"
-import { LoadingScreen } from "@/components/ui/LoadingScreen"
-import { Button } from "@/components/ui/Button"
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader"
+import { LoadingScreen } from "@/components/ui/layout/loading-screen/LoadingScreen"
+import { Button } from "@/components/ui/elements/button/Button"
 
 export default function NewJobLoadingPage() {
   return (

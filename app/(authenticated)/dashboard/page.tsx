@@ -1,5 +1,5 @@
-import Calendar from '@/components/calendar/Calendar';
-import { PageHeader } from '@/components/ui/PageHeader';
+import Calendar from "@/components/calendar/Calendar";
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader";
 
 export default function DashboardPage() {
   return (

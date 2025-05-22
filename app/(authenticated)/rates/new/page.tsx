@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/lib/toast";
-import { PageHeader } from "@/components/ui/PageHeader";
-import RateForm from "@/components/rates/RateForm";
-import type { CreateRateInput } from "@/types/rate";
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader";
+import RateForm from "../components/RateForm";
+import type { CreateRateInput } from "../types";
 
 export default function NewRatePage() {
   const router = useRouter();

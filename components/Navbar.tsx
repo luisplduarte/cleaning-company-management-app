@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
 import { cn } from "@/lib/utils"
-import { Dropdown } from "@/components/ui/Dropdown"
+import { Dropdown } from "@/components/ui/molecules/dropdown/Dropdown"
 
 type NavItem = {
   name: string;

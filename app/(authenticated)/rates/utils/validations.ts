@@ -29,7 +29,3 @@ export const systemRateSchema = z.object({
 }).strict(); // Only allow value field
 
 export const isSystemRate = (name: string) => name === 'Company Profit Margin';
-
-export type CreateRateInput = z.infer<typeof createRateSchema>;
-export type UpdateRateInput = z.infer<typeof updateRateSchema>;
-export type SystemRateInput = z.infer<typeof systemRateSchema>;

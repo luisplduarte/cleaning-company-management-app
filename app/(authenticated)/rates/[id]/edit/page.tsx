@@ -3,10 +3,10 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/lib/toast";
-import { PageHeader } from "@/components/ui/PageHeader";
-import RateForm from "@/components/rates/RateForm";
-import type { CreateRateInput, SystemRateInput } from "@/types/rate";
-import { Spinner } from "@/components/ui/Spinner";
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader";
+import RateForm from "../../components/RateForm";
+import type { CreateRateInput, SystemRateInput } from "../../types";
+import { Spinner } from "@/components/ui/elements/spinner/Spinner";
 
 interface Props {
   params: Promise<{

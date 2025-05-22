@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
-import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/elements/button/Button";
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader";
 import { WorkerRateHistory } from "@/components/workers/WorkerRateHistory";
 import { FiEdit2, FiEye } from "react-icons/fi";
 import type { Worker } from "@prisma/client";

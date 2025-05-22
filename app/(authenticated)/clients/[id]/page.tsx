@@ -2,8 +2,8 @@ import { auth } from "@/auth";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { Button } from "@/components/ui/Button";
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader";
+import { Button } from "@/components/ui/elements/button/Button";
 import { JobsTable } from "@/components/jobs/JobsTable";
 import { JobType, JobStatus } from "@/lib/validations/job";
 

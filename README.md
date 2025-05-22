@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cleaning Company Management App
 
-## Getting Started
+A web application for managing cleaning company operations, including workforce management, client relationships, and job scheduling.
 
-First, run the development server:
+## Project Structure
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+/
+├── app/                          # Next.js App Router pages and API routes
+│   ├── api/                     # API endpoints
+│   ├── auth/                    # Authentication feature
+│   │   ├── components/         # Auth-specific components
+│   │   ├── hooks/             # Auth-specific hooks
+│   │   └── utils/             # Auth-specific utilities
+│   └── (authenticated)/         # Protected routes
+│       ├── calendar/           # Calendar feature
+│       ├── clients/            # Clients feature
+│       ├── jobs/              # Jobs feature
+│       ├── rates/             # Rates feature
+│       ├── workers/           # Workers feature
+│       ├── client-payments/   # Client payments feature
+│       └── worker-payments/   # Worker payments feature
+│
+├── components/                   # Shared components
+│   └── ui/                     # UI component library
+│       ├── elements/          # Atomic components (Button, Input, etc.)
+│       ├── molecules/         # Composite components (FormField, etc.)
+│       ├── organisms/         # Complex components (Dialog, etc.)
+│       └── layout/           # Layout components
+│
+├── lib/                         # Core utilities and backend logic
+│   ├── prisma.ts             # Prisma client setup
+│   ├── supabase.ts           # Supabase client setup
+│   └── validations/          # Core validation utilities
+│
+├── styles/                      # Global styles
+├── public/                      # Static assets
+└── types/                       # Global TypeScript types
+
+## Feature-based Organization
+
+Each feature directory (e.g., app/(authenticated)/clients/) follows this structure:
+```
+feature/
+├── components/     # Feature-specific components
+├── hooks/          # Feature-specific hooks
+├── utils/          # Feature-specific utilities
+├── types.ts        # Feature-specific types
+└── page.tsx        # Feature page
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
+- Node.js v18+
+- pnpm
+- PostgreSQL (via Supabase)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Getting Started
+1. Clone the repository
+2. Copy .env.example to .env.local and fill in the values
+3. Install dependencies: `pnpm install`
+4. Start the development server: `pnpm dev`
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Key Technologies
+- Next.js 14
+- React 18
+- TypeScript
+- Tailwind CSS
+- Prisma
+- Supabase
+- NextAuth.js

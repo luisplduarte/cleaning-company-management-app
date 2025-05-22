@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/ui/PageHeader";
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader";
 import EditWorkerForm from "@/components/workers/EditWorkerForm";
 import { WorkerResponse } from "@/types/worker";
 

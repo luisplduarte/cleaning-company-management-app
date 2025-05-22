@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { redirect, notFound } from "next/navigation";
-import { PageHeader } from "@/components/ui/PageHeader";
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader";
 import { EditClientForm } from "@/components/clients/EditClientForm";
 import { prisma } from "@/lib/prisma";
 

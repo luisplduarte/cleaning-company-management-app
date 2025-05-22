@@ -1,4 +1,4 @@
-import { RatesHeader } from "@/components/rates/RatesHeader";
+import { RatesHeader } from "@/app/(authenticated)/rates/components/RatesHeader";
 import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function Loading() {

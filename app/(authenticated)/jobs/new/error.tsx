@@ -1,6 +1,6 @@
 'use client'
 
-import { ErrorBoundary } from "@/components/ui/ErrorBoundary"
+import { ErrorBoundary } from "@/components/ui/layout/error-boundary/ErrorBoundary"
 
 export default function NewJobErrorPage({
   error,

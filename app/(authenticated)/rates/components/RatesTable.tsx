@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/lib/toast";
-import { Button } from "@/components/ui/Button";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { Button } from "@/components/ui/elements/button/Button";
+import { ConfirmDialog } from "@/components/ui/organisms/confirm-dialog/ConfirmDialog";
 import { FiEdit2, FiTrash2, FiEye } from "react-icons/fi";
-import type { Rate } from "@/types/rate";
+import type { Rate } from "../types";
 
 interface RatesTableProps {
   rates: Rate[];

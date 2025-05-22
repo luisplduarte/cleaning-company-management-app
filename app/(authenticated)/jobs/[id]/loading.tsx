@@ -1,5 +1,5 @@
-import { PageHeader } from "@/components/ui/PageHeader"
-import { Button } from "@/components/ui/Button"
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader"
+import { Button } from "@/components/ui/elements/button/Button"
 
 export default function JobLoadingPage() {
   return (

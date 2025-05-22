@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/Button"
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
+import { Button } from "@/components/ui/elements/button/Button"
+import { ConfirmDialog } from "@/components/ui/organisms/confirm-dialog/ConfirmDialog"
 import { FiEdit2, FiTrash2, FiEye } from "react-icons/fi"
 import { formatDate } from "@/lib/utils"
 import type { JobTableItem } from "@/types/job"

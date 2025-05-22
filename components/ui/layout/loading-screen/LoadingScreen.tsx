@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import { Spinner } from "@/components/ui/Spinner"
+import { Spinner } from "@/components/ui/elements/spinner/Spinner"
 
 interface LoadingScreenProps {
   children?: ReactNode

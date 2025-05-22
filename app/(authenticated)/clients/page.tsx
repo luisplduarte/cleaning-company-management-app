@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { ClientsTable } from "@/components/clients/ClientsTable";
 import { ClientsHeader } from "@/components/clients/ClientsHeader";
-import { LoadingScreen } from "@/components/ui/LoadingScreen";
+import { LoadingScreen } from "@/components/ui/layout/loading-screen/LoadingScreen";
 
 async function getClients() {
   const clients = await prisma.client.findMany();

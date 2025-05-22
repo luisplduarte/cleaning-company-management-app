@@ -1,7 +1,7 @@
 "use client";
 
-import { RatesHeader } from "@/components/rates/RatesHeader";
-import { Button } from "@/components/ui/Button";
+import { RatesHeader } from "@/app/(authenticated)/rates/components/RatesHeader";
+import { Button } from "@/components/ui/elements/button/Button";
 import { useEffect } from "react";
 import { FiAlertCircle, FiRefreshCcw } from "react-icons/fi";
 

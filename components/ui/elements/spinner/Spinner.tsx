@@ -1,3 +1,5 @@
+"use client"
+
 interface SpinnerProps {
   className?: string
   size?: 'sm' | 'md' | 'lg'

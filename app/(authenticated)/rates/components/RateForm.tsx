@@ -1,12 +1,14 @@
+"use client";
+
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Button } from "@/components/ui/Button";
-import { FormField } from "@/components/ui/FormField";
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
-import type { CreateRateInput, SystemRateInput } from "@/types/rate";
+import { Button } from "@/components/ui/elements/button/Button";
+import { FormField } from "@/components/ui/molecules/form-field/FormField";
+import { Input } from "@/components/ui/elements/input/Input";
+import { Textarea } from "@/components/ui/elements/textarea/Textarea";
+import type { CreateRateInput, SystemRateInput } from "../types";
 
 interface RateFormProps {
   initialData?: CreateRateInput;

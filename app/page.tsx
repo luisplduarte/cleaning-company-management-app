@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
-import { Button } from "@/components/ui/Button"
+import { Button } from "@/components/ui/elements/button/Button"
 
 export const metadata: Metadata = {
   title: "Welcome",

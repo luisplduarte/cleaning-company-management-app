@@ -1,5 +1,5 @@
-import { PageHeader } from "@/components/ui/PageHeader"
-import { LoadingScreen } from "@/components/ui/LoadingScreen"
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader"
+import { LoadingScreen } from "@/components/ui/layout/loading-screen/LoadingScreen"
 
 export default function DashboardLoadingPage() {
   return (

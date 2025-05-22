@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { WorkerPayment } from "@/types/payment"
 import { PaymentStatus } from "@/types/payment"
-import { Button } from "../ui/Button"
+import { Button } from "@/components/ui/elements/button/Button"
 import { FiEdit2, FiCheck, FiX } from "react-icons/fi"
 
 export default function WorkerPaymentsTable() {

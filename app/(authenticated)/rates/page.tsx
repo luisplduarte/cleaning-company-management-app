@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
-import { RatesHeader } from "@/components/rates/RatesHeader";
-import { RatesTable } from "@/components/rates/RatesTable";
-import type { Rate } from "@/types/rate";
+import { RatesHeader } from "./components/RatesHeader";
+import { RatesTable } from "./components/RatesTable";
+import type { Rate } from "./types";
 
 export default async function RatesPage() {
   const ratesData = await prisma.rate.findMany({

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { systemRateSchema } from "@/lib/validations/rate";
+import { systemRateSchema } from "@/app/(authenticated)/rates/utils/validations";
 
 export async function GET() {
   try {

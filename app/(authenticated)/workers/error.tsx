@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button } from "@/components/ui/Button";
-import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/elements/button/Button";
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader";
 
 export default function WorkersError({
   error,

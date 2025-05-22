@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { updateRateSchema } from "@/lib/validations/rate";
+import { updateRateSchema } from "@/app/(authenticated)/rates/utils/validations";
 
 export async function GET(
   _req: NextRequest,

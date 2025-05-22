@@ -8,9 +8,9 @@ import { toast } from "@/lib/toast";
 import { ClientFormData } from "@/types/client";
 import { createClientSchema } from "@/lib/validations/client";
 
-import { FormField } from "@/components/ui/FormField";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
+import { FormField } from "@/components/ui/molecules/form-field/FormField";
+import { Input } from "@/components/ui/elements/input/Input";
+import { Button } from "@/components/ui/elements/button/Button";
 
 interface ClientFormProps {
   initialData?: ClientFormData;
