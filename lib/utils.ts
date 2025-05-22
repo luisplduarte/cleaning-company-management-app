@@ -70,3 +70,12 @@ export function debounce<T extends (...args: unknown[]) => void>(
 export function capitalizeFirstLetter(string: string): string {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
 }
+
+export const formatPaymentStatus = (status: string): string => {
+  const statusMap: Record<string, string> = {
+    'WAITING_PAYMENT': 'Waiting payment',
+    'ISSUED': 'Issued',
+    'COMPLETED': 'Completed'
+  }
+  return statusMap[status] || status
+}

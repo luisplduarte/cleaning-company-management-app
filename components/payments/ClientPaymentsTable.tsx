@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { ClientPayment, PaymentStatus } from "@/types/payment"
 import { Button } from "@/components/ui/elements/button/Button"
 import { FiEdit2, FiCheck, FiX } from "react-icons/fi"
+import { formatPaymentStatus } from "@/lib/utils"
 
 export default function ClientPaymentsTable() {
   const [payments, setPayments] = useState<ClientPayment[]>([])
@@ -99,12 +100,12 @@ export default function ClientPaymentsTable() {
                     onChange={(e) => setEditingStatus(e.target.value as PaymentStatus)}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   >
-                    <option value="WAITING_PAYMENT">Waiting Payment</option>
-                    <option value="ISSUED">Issued</option>
-                    <option value="COMPLETED">Completed</option>
+                    <option value="WAITING_PAYMENT">{formatPaymentStatus("WAITING_PAYMENT")}</option>
+                    <option value="ISSUED">{formatPaymentStatus("ISSUED")}</option>
+                    <option value="COMPLETED">{formatPaymentStatus("COMPLETED")}</option>
                   </select>
                 ) : (
-                  <span>{payment.status}</span>
+                  <span>{formatPaymentStatus(payment.status)}</span>
                 )}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
