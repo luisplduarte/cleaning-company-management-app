@@ -1,12 +1,11 @@
-import Calendar from "@/components/calendar/Calendar";
 import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader";
 
 export default function DashboardPage() {
   return (
     <div className="space-y-6 p-6">
-      <PageHeader title="Dashboard" description="View and manage your jobs" />
-      <div className="h-[calc(100vh-12rem)]">
-        <Calendar />
+      <PageHeader title="Dashboard" description="Welcome to your dashboard" />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {/* Dashboard content will be added here */}
       </div>
     </div>
   );

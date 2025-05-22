@@ -15,8 +15,15 @@ type NavItem = {
 
 const navigation: NavItem[] = [
   { name: "Dashboard", href: "/dashboard" },
-  { name: "Jobs", href: "/jobs" },
   { name: "Rates", href: "/rates" },
+  {
+    name: "Jobs",
+    type: "dropdown",
+    items: [
+      { name: "Jobs List", href: "/jobs" },
+      { name: "Calendar", href: "/calendar" },
+    ]
+  },
   {
     name: "Clients",
     type: "dropdown",
