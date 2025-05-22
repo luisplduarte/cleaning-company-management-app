@@ -69,7 +69,7 @@ export default async function ClientPage({
   }
 
   return (
-    <div className="space-y-6">
+    <main className="container mx-auto py-6 px-4 space-y-6">
       <div className="flex items-center justify-between">
         <PageHeader
           title={client.name}
@@ -95,6 +95,6 @@ export default async function ClientPage({
           <JobsTable jobs={client.jobs} />
         )}
       </div>
-    </div>
+    </main>
   );
 }
