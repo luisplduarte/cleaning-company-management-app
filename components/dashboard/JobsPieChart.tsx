@@ -25,16 +25,23 @@ export default function JobsPieChart({ data }: JobsPieChartProps) {
     // Set themes
     root.setThemes([am5themes_Animated.new(root)]);
 
+    //Configure root container
+    const container = root.container.children.push(
+      am5.Container.new(root, {
+        width: am5.percent(100),
+        height: am5.percent(100),
+        y: am5.percent(10),
+      })
+    );
+
     // Create chart
-    const chart = root.container.children.push(
+    const chart = container.children.push(
       am5percent.PieChart.new(root, {
         innerRadius: am5.percent(50),
         radius: am5.percent(80),
         layout: root.verticalLayout,
         y: am5.percent(50),
         centerY: am5.percent(50),
-        paddingTop: 0,
-        paddingBottom: 0
       })
     );
 
@@ -65,7 +72,6 @@ export default function JobsPieChart({ data }: JobsPieChartProps) {
         centerX: am5.percent(50),
         x: am5.percent(50),
         layout: am5.GridLayout.new(root, {
-          //maxColumns: 3,
           fixedWidthGrid: true
         }),
         height: 100,
