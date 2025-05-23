@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
 const JobsPieChart = dynamic(() => import("./JobsPieChart"), { ssr: false });
-const PaymentStatusChart = dynamic(() => import("./PaymentStatusChart"), { ssr: false });
 const WorkerEfficiencyChart = dynamic(() => import("./WorkerEfficiencyChart"), { ssr: false });
-const RevenueTrendChart = dynamic(() => import("./RevenueTrendChart"), { ssr: false });
 
 interface DashboardData {
   jobsByType: {
@@ -70,25 +68,13 @@ export default function Charts() {
           </div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Payment Status Overview</h3>
-          <div className="h-[300px]">
-            <PaymentStatusChart data={data.paymentStatus} />
-          </div>
-        </div>
-      </div>
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-4">Worker Efficiency</h3>
           <div className="h-[300px]">
             <WorkerEfficiencyChart data={data.workerEfficiency} />
           </div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Revenue Trends</h3>
-          <div className="h-[300px]">
-            <RevenueTrendChart data={data.revenueByMonth} />
-          </div>
-        </div>
+      </div>
+      <div className="grid gap-6 md:grid-cols-2">
       </div>
     </div>
   );

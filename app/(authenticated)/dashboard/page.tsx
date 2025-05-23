@@ -3,9 +3,9 @@ import Charts from "@/components/dashboard/Charts";
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-6">
+    <main className="container mx-auto py-6 px-4 space-y-4">
       <PageHeader title="Dashboard" description="Welcome to your dashboard" />
       <Charts />
-    </div>
+    </main>
   );
 }
