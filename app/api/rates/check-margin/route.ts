@@ -19,7 +19,14 @@ export async function GET() {
       });
     }
 
-    return NextResponse.json(profitMarginRate);
+    // Convert Date objects to ISO strings for JSON serialization
+    const serializedRate = {
+      ...profitMarginRate,
+      created_at: profitMarginRate.created_at.toISOString(),
+      updated_at: profitMarginRate.updated_at.toISOString(),
+    };
+
+    return NextResponse.json(serializedRate);
   } catch (error) {
     console.error("Error checking/creating profit margin rate:", error);
     return new NextResponse("Internal Server Error", { status: 500 });

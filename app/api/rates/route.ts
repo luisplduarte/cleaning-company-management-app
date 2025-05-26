@@ -11,7 +11,14 @@ export async function GET() {
       },
     });
 
-    return Response.json(rates);
+    // Convert Date objects to ISO strings for JSON serialization
+    const serializedRates = rates.map(rate => ({
+      ...rate,
+      created_at: rate.created_at.toISOString(),
+      updated_at: rate.updated_at.toISOString(),
+    }));
+
+    return Response.json(serializedRates);
   } catch (error) {
     console.error("[RATES_GET]", error);
     return new Response("Internal server error", { status: 500 });
@@ -27,8 +34,15 @@ export async function POST(req: NextRequest) {
       data: body,
     });
 
+    // Convert Date objects to ISO strings for JSON serialization
+    const serializedRate = {
+      ...rate,
+      created_at: rate.created_at.toISOString(),
+      updated_at: rate.updated_at.toISOString(),
+    };
+
     revalidatePath("/rates");
-    return Response.json(rate);
+    return Response.json(serializedRate);
   } catch (error) {
     console.error("[RATES_POST]", error);
     return new Response("Invalid request", { status: 400 });
