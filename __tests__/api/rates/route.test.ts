@@ -3,13 +3,19 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { GET, POST } from "@/app/api/rates/route";
 import { CreateRateInput, Rate } from "@/app/(authenticated)/rates/types";
+import { z } from "zod";
 
 // Mock prisma
 jest.mock("@/lib/prisma", () => ({
   prisma: {
     rate: {
       findMany: jest.fn(),
-      create: jest.fn(),
+      create: jest.fn(({ data }) => ({
+        ...data,
+        id: "1",
+        created_at: new Date("2025-05-26T08:05:49.065Z"),
+        updated_at: new Date("2025-05-26T08:05:49.065Z"),
+      })),
     },
   },
 }));
@@ -22,7 +28,20 @@ jest.mock("next/cache", () => ({
 // Mock rate validation
 jest.mock("@/lib/validations/rate", () => ({
   createRateSchema: {
-    parse: jest.fn().mockImplementation((data) => data),
+    parse: jest.fn().mockImplementation((data) => {
+      if (!data.name || !data.value) {
+        throw new z.ZodError([
+          {
+            code: z.ZodIssueCode.invalid_type,
+            expected: "string",
+            received: "undefined",
+            path: ["name"],
+            message: "Required",
+          },
+        ]);
+      }
+      return data;
+    }),
   },
 }));
 
@@ -54,13 +73,7 @@ describe("Rates API", () => {
         },
       ];
 
-      (prisma.rate.findMany as jest.Mock).mockResolvedValueOnce(
-        mockRates.map(rate => ({
-          ...rate,
-          created_at: mockDate,
-          updated_at: mockDate,
-        }))
-      );
+      (prisma.rate.findMany as jest.Mock).mockResolvedValueOnce(mockRates);
 
       const response = await GET();
       const data = await response.json();
@@ -121,12 +134,6 @@ describe("Rates API", () => {
         updated_at: mockDate
       };
 
-      (prisma.rate.create as jest.Mock).mockResolvedValueOnce({
-        ...mockRate,
-        created_at: mockDate,
-        updated_at: mockDate,
-      });
-
       const request = mockRequest({
         name: "Test Rate",
         description: "Test Description",
@@ -157,7 +164,7 @@ describe("Rates API", () => {
 
     it("handles invalid data formats", async () => {
       const request = mockRequest({
-        // Missing required fields
+        description: "Missing name and value"
       });
 
       const response = await POST(request);
