@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  directUrl    = env("DIRECT_URL")
   relationMode = "prisma"
 }
 
@@ -92,7 +92,9 @@ model Worker {
   country      String
   town         String
   zipCode      String
-  hourly_rate  Decimal             @default(0) @db.Decimal(10, 2)
+  hourly_rate  Decimal            @default(0) @db.Decimal(10, 2)
+  created_at   DateTime           @default(now())
+  updated_at   DateTime           @updatedAt
   assignments  Assignment[]
   payments     WorkerPayment[]
   rate_history WorkerRateHistory[]
@@ -126,16 +128,16 @@ model Rate {
 }
 
 model WorkerPayment {
-  id         String        @id @default(cuid())
-  worker_id  String
-  job_id     String
-  amount     Decimal       @db.Decimal(10, 2)
-  status     PaymentStatus @default(WAITING_PAYMENT)
+  id           String        @id @default(cuid())
+  worker_id    String
+  job_id       String
+  amount       Decimal       @db.Decimal(10, 2)
+  status       PaymentStatus @default(WAITING_PAYMENT)
   payment_date DateTime?
-  created_at DateTime      @default(now())
-  updated_at DateTime      @updatedAt
-  job        Job           @relation(fields: [job_id], references: [id], onDelete: Cascade)
-  worker     Worker        @relation(fields: [worker_id], references: [id], onDelete: Cascade)
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  job          Job          @relation(fields: [job_id], references: [id], onDelete: Cascade)
+  worker       Worker       @relation(fields: [worker_id], references: [id], onDelete: Cascade)
 }
 
 model ClientPayment {
@@ -148,7 +150,7 @@ model ClientPayment {
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
   client       Client        @relation(fields: [client_id], references: [id], onDelete: Cascade)
-  job          Job           @relation(fields: [job_id], references: [id], onDelete: Cascade)
+  job          Job          @relation(fields: [job_id], references: [id], onDelete: Cascade)
 }
 
 enum Role {

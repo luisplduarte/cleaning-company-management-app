@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { updateWorkerSchema } from "@/lib/validations/worker";
+import { Worker } from "@prisma/client";
 
 export async function GET(
   _req: NextRequest,
@@ -21,7 +22,17 @@ export async function GET(
       return new Response("Worker not found", { status: 404 });
     }
 
-    return Response.json(worker);
+    const serializedWorker = {
+      ...worker,
+      created_at: worker.created_at.toISOString(),
+      updated_at: worker.updated_at.toISOString(),
+      rate_history: worker.rate_history.map(history => ({
+        ...history,
+        changed_at: history.changed_at.toISOString(),
+      })),
+    };
+
+    return Response.json(serializedWorker);
   } catch (error) {
     console.error("[WORKER_GET]", error);
     return new Response("Internal server error", { status: 500 });
@@ -33,7 +44,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const json = await req.json();
     const body = updateWorkerSchema.parse(json);
 
@@ -73,9 +84,19 @@ export async function PUT(
       return updatedWorker;
     });
 
+    const serializedWorker = {
+      ...worker,
+      created_at: worker.created_at.toISOString(),
+      updated_at: worker.updated_at.toISOString(),
+      rate_history: worker.rate_history.map(history => ({
+        ...history,
+        changed_at: history.changed_at.toISOString(),
+      })),
+    };
+
     revalidatePath("/workers");
     revalidatePath(`/workers/${id}`);
-    return Response.json(worker);
+    return Response.json(serializedWorker);
   } catch (error) {
     console.error("[WORKER_PUT]", error);
     return new Response("Invalid request", { status: 400 });
