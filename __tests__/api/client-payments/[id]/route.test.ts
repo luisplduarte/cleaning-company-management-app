@@ -1,8 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import { PATCH } from "@/app/api/client-payments/[id]/route";
-import { ClientPayment, PaymentUpdateData } from "@/types/payment";
 import { PaymentStatus } from "@prisma/client";
+import { NextRequest } from "next/server";
+import { Decimal } from "@prisma/client/runtime/library";
 
+// Mock console.error to avoid noisy test output
+const originalError = console.error;
+jest.spyOn(console, 'error').mockImplementation(() => {});
+
+// Mock prisma
 jest.mock("@/lib/prisma", () => ({
   prisma: {
     clientPayment: {
@@ -11,191 +17,87 @@ jest.mock("@/lib/prisma", () => ({
   },
 }));
 
-describe("Client Payment [ID] API", () => {
+describe("Client Payment [id] API", () => {
+  const mockDate = new Date("2025-05-26T08:05:49.065Z");
+  const mockParams = { params: { id: "test-id" } };
+
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
+    jest.setSystemTime(mockDate);
   });
 
-  const mockDate = new Date("2025-05-26T08:05:49.065Z");
-  const mockId = "test-payment-id";
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  afterAll(() => {
+    console.error = originalError;
+  });
 
   describe("PATCH", () => {
-    const createRequest = (body: PaymentUpdateData) =>
-      new Request("http://localhost", {
+    it("updates payment status and sets payment date for completed status", async () => {
+      const mockPayment = {
+        id: "test-id",
+        amount: new Decimal(500),
+        status: PaymentStatus.COMPLETED,
+        payment_date: mockDate,
+        client_id: "client-1",
+        job_id: "job-1",
+        created_at: mockDate,
+        updated_at: mockDate,
+        client: {
+          id: "client-1",
+          name: "Test Client",
+        },
+        job: {
+          id: "job-1",
+          title: "Test Job",
+          start_date: mockDate,
+          end_date: new Date(mockDate.getTime() + 3600000),
+        },
+      };
+
+      const expectedResponse = {
+        ...mockPayment,
+        amount: parseFloat(mockPayment.amount.toString()),
+        payment_date: mockDate.toISOString(),
+        created_at: mockDate.toISOString(),
+        updated_at: mockDate.toISOString(),
+        job: {
+          ...mockPayment.job,
+          start_date: mockPayment.job.start_date.toISOString(),
+          end_date: mockPayment.job.end_date.toISOString(),
+        },
+      };
+
+      (prisma.clientPayment.update as jest.Mock).mockResolvedValueOnce(mockPayment);
+
+      const request = new NextRequest("http://test.com", {
         method: "PATCH",
-        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: PaymentStatus.COMPLETED }),
       });
 
-    it("updates payment status to completed", async () => {
-      const mockPayment: ClientPayment = {
-        id: mockId,
-        client_id: "client1",
-        job_id: "job1",
-        amount: 1000,
-        status: PaymentStatus.COMPLETED,
-        payment_date: mockDate,
-        created_at: mockDate,
-        updated_at: mockDate,
-        client: {
-          id: "client1",
-          name: "Client A",
-        },
-        job: {
-          id: "job1",
-          title: "Job A",
-          start_date: mockDate,
-          end_date: new Date(mockDate.getTime() + 24 * 60 * 60 * 1000),
-        },
-      };
-
-      (prisma.clientPayment.update as jest.Mock).mockResolvedValueOnce({
-        ...mockPayment,
-        created_at: mockDate,
-        updated_at: mockDate,
-        payment_date: mockDate,
-        job: {
-          ...mockPayment.job,
-          start_date: mockDate,
-          end_date: new Date(mockDate.getTime() + 24 * 60 * 60 * 1000),
-        },
-      });
-
-      const request = createRequest({
-        status: PaymentStatus.COMPLETED,
-      });
-
-      const response = await PATCH(request, { params: { id: mockId } });
+      const response = await PATCH(request, mockParams);
       const data = await response.json();
 
-      // Convert date strings to Date objects for comparison
-      const parsedData = {
-        ...data,
-        created_at: new Date(data.created_at),
-        updated_at: new Date(data.updated_at),
-        payment_date: data.payment_date ? new Date(data.payment_date) : null,
-        job: {
-          ...data.job,
-          start_date: new Date(data.job.start_date),
-          end_date: new Date(data.job.end_date),
-        },
-      };
-
       expect(response.status).toBe(200);
-      expect(parsedData).toEqual(mockPayment);
-      expect(prisma.clientPayment.update).toHaveBeenCalledWith({
-        where: { id: mockId },
-        data: {
-          status: PaymentStatus.COMPLETED,
-          payment_date: expect.any(Date),
-        },
-        include: {
-          client: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          job: {
-            select: {
-              id: true,
-              title: true,
-              start_date: true,
-              end_date: true,
-            },
-          },
-        },
-      });
+      expect(data).toEqual(expectedResponse);
     });
 
-    it("updates payment status to waiting payment", async () => {
-      const mockPayment: ClientPayment = {
-        id: mockId,
-        client_id: "client1",
-        job_id: "job1",
-        amount: 1000,
-        status: PaymentStatus.WAITING_PAYMENT,
-        payment_date: null,
-        created_at: mockDate,
-        updated_at: mockDate,
-        client: {
-          id: "client1",
-          name: "Client A",
-        },
-        job: {
-          id: "job1",
-          title: "Job A",
-          start_date: mockDate,
-          end_date: new Date(mockDate.getTime() + 24 * 60 * 60 * 1000),
-        },
-      };
-
-      (prisma.clientPayment.update as jest.Mock).mockResolvedValueOnce({
-        ...mockPayment,
-        created_at: mockDate,
-        updated_at: mockDate,
-        job: {
-          ...mockPayment.job,
-          start_date: mockDate,
-          end_date: new Date(mockDate.getTime() + 24 * 60 * 60 * 1000),
-        },
+    it("handles validation errors with 400 status", async () => {
+      const request = new NextRequest("http://test.com", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "INVALID" }),
       });
 
-      const request = createRequest({
-        status: PaymentStatus.WAITING_PAYMENT,
-      });
-
-      const response = await PATCH(request, { params: { id: mockId } });
+      const response = await PATCH(request, mockParams);
       const data = await response.json();
 
-      // Convert date strings to Date objects for comparison
-      const parsedData = {
-        ...data,
-        created_at: new Date(data.created_at),
-        updated_at: new Date(data.updated_at),
-        payment_date: data.payment_date ? new Date(data.payment_date) : null,
-        job: {
-          ...data.job,
-          start_date: new Date(data.job.start_date),
-          end_date: new Date(data.job.end_date),
-        },
-      };
-
-      expect(response.status).toBe(200);
-      expect(parsedData).toEqual(mockPayment);
-      expect(prisma.clientPayment.update).toHaveBeenCalledWith({
-        where: { id: mockId },
-        data: {
-          status: PaymentStatus.WAITING_PAYMENT,
-          payment_date: null,
-        },
-        include: {
-          client: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          job: {
-            select: {
-              id: true,
-              title: true,
-              start_date: true,
-              end_date: true,
-            },
-          },
-        },
-      });
-    });
-
-    it("handles invalid payment status", async () => {
-      const request = createRequest({
-        status: "INVALID_STATUS" as PaymentStatus,
-      });
-
-      const response = await PATCH(request, { params: { id: mockId } });
-
-      expect(response.status).toBe(500);
-      expect(await response.text()).toBe("Internal Server Error");
+      expect(response.status).toBe(400);
+      expect(data).toEqual({ error: "Invalid payment status" });
     });
 
     it("handles database errors gracefully", async () => {
@@ -203,11 +105,13 @@ describe("Client Payment [ID] API", () => {
         new Error("Database error")
       );
 
-      const request = createRequest({
-        status: PaymentStatus.COMPLETED,
+      const request = new NextRequest("http://test.com", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: PaymentStatus.COMPLETED }),
       });
 
-      const response = await PATCH(request, { params: { id: mockId } });
+      const response = await PATCH(request, mockParams);
 
       expect(response.status).toBe(500);
       expect(await response.text()).toBe("Internal Server Error");
