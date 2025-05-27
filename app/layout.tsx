@@ -2,6 +2,7 @@ import { Inter } from "next/font/google"
 import { Metadata } from "next"
 import "./globals.css"
 import AuthProvider from "@/app/auth/components/AuthProvider"
+import { Providers } from "./providers"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -22,7 +23,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} min-h-screen bg-blue-100 text-black antialiased`}>
         <AuthProvider>
-          {children}
+          <Providers>
+            {children}
+          </Providers>
         </AuthProvider>
         <div id="modal-root" />
       </body>

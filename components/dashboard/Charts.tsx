@@ -1,80 +1,66 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense } from "react";
 import dynamic from "next/dynamic";
+import { ChartSkeleton } from "./ChartSkeleton";
+import { useDashboardData } from "./hooks/useDashboardData";
 
-const JobsPieChart = dynamic(() => import("./JobsPieChart"), { ssr: false });
-const WorkerEfficiencyChart = dynamic(() => import("./WorkerEfficiencyChart"), { ssr: false });
+const JobsPieChart = dynamic(() => import("./JobsPieChart"), {
+  loading: () => <ChartSkeleton />,
+  ssr: false,
+});
 
-interface DashboardData {
-  jobsByType: {
-    type: string;
-    count: number;
-  }[];
-  paymentStatus: {
-    client: {
-      status: string;
-      amount: number;
-    }[];
-    worker: {
-      status: string;
-      amount: number;
-    }[];
-  };
-  workerEfficiency: {
-    name: string;
-    totalJobs: number;
-    completedJobs: number;
-  }[];
-  revenueByMonth: {
-    date: string;
-    amount: number;
-  }[];
-}
+const WorkerEfficiencyChart = dynamic(() => import("./WorkerEfficiencyChart"), {
+  loading: () => <ChartSkeleton />,
+  ssr: false,
+});
 
 export default function Charts() {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, error, isLoading } = useDashboardData();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/dashboard");
-        if (!response.ok) throw new Error("Failed to fetch dashboard data");
-        const result = await response.json();
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
+  if (error) {
+    return (
+      <div className="rounded-lg bg-red-50 p-4 text-red-500">
+        <h3 className="text-lg font-semibold">Error loading dashboard</h3>
+        <p>{error instanceof Error ? error.message : "Failed to load data"}</p>
+      </div>
+    );
+  }
 
-    fetchData();
-  }, []);
-
-  if (loading) return <div className="text-center p-4">Loading charts...</div>;
-  if (error) return <div className="text-red-500 p-4">{error}</div>;
-  if (!data) return null;
+  if (isLoading || !data) {
+    return (
+      <div className="grid gap-6 p-6">
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="bg-white p-6 rounded-lg shadow">
+            <ChartSkeleton />
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow">
+            <ChartSkeleton />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-6 p-6">
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Jobs by Type</h3>
-          <div className="h-[250px] flex items-center justify-center">
-            <JobsPieChart data={data.jobsByType} />
+        <Suspense fallback={<ChartSkeleton />}>
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">Jobs by Type</h3>
+            <div className="h-[250px] flex items-center justify-center">
+              <JobsPieChart data={data.jobsByType} />
+            </div>
           </div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Worker Efficiency</h3>
-          <div className="h-[300px]">
-            <WorkerEfficiencyChart data={data.workerEfficiency} />
+        </Suspense>
+        <Suspense fallback={<ChartSkeleton />}>
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">Worker Efficiency</h3>
+            <div className="h-[300px]">
+              <WorkerEfficiencyChart data={data.workerEfficiency} />
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="grid gap-6 md:grid-cols-2">
+        </Suspense>
       </div>
     </div>
   );

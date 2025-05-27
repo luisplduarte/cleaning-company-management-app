@@ -1,30 +1,25 @@
-import { prisma } from "@/lib/prisma";
+"use client";
+
 import { RatesHeader } from "./components/RatesHeader";
 import { RatesTable } from "./components/RatesTable";
-import type { Rate } from "./types";
+import { useRatesData } from "./hooks/useRatesData";
+import { TableSkeleton } from "@/components/ui/table/TableSkeleton";
+export default function RatesPage() {
+  const { data: rates, error, isLoading } = useRatesData();
 
-export default async function RatesPage() {
-  const ratesData = await prisma.rate.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
-
-  // Convert Decimal objects to regular numbers for serialization
-  const rates: Rate[] = ratesData.map(rate => ({
-    id: rate.id,
-    name: rate.name,
-    description: rate.description,
-    value: Number(rate.value),
-    created_at: rate.created_at,
-    updated_at: rate.updated_at
-  }));
+  if (error) {
+    throw error; // This will be caught by the error boundary
+  }
 
   return (
     <main className="container mx-auto py-6 px-4">
       <RatesHeader />
       <div className="mt-8">
-        <RatesTable rates={rates} />
+        {isLoading ? (
+          <TableSkeleton columns={4} rows={5} />
+        ) : rates ? (
+          <RatesTable rates={rates} />
+        ) : null}
       </div>
     </main>
   );

@@ -1,19 +1,31 @@
-'use client'
+"use client";
 
-import { ErrorBoundary } from "@/components/ui/layout/error-boundary/ErrorBoundary"
+import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader";
 
-export default function DashboardErrorPage({
+export default function DashboardError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error;
+  reset: () => void;
 }) {
   return (
-    <ErrorBoundary
-      error={error}
-      reset={reset}
-      message="Failed to load dashboard"
-    />
-  )
+    <main className="container mx-auto py-6 px-4 space-y-4">
+      <PageHeader title="Dashboard" description="Welcome to your dashboard" />
+      <div className="rounded-lg bg-red-50 p-6">
+        <div className="flex flex-col items-center text-center">
+          <h2 className="text-lg font-semibold text-red-800 mb-2">
+            Something went wrong!
+          </h2>
+          <p className="text-red-600 mb-4">{error.message}</p>
+          <button
+            onClick={reset}
+            className="px-4 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors"
+          >
+            Try again
+          </button>
+        </div>
+      </div>
+    </main>
+  );
 }
