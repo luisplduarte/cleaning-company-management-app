@@ -2,7 +2,6 @@ import { NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { updateWorkerSchema } from "@/lib/validations/worker";
-import { Worker } from "@prisma/client";
 
 export async function GET(
   _req: NextRequest,

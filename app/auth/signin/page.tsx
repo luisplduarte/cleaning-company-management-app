@@ -10,8 +10,8 @@ import { SignInInput, signInSchema } from "@/lib/validations/auth"
 
 export default function SignIn() {
   const router = useRouter()
-  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const {
     register,
@@ -39,7 +39,7 @@ export default function SignIn() {
 
       router.push('/dashboard')
       router.refresh()
-    } catch (error) {
+    } catch {
       setError('An error occurred. Please try again.')
     } finally {
       setLoading(false)
@@ -107,7 +107,7 @@ export default function SignIn() {
         </form>
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
+            {"Don't have an account?"}{' '}
             <Link href="/auth/signup" className="text-indigo-600 hover:text-indigo-500 font-medium">
               Create an account
             </Link>

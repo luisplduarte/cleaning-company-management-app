@@ -5,15 +5,12 @@ import { prisma } from "@/lib/prisma"
 import { PageHeader } from "@/components/ui/organisms/page-header/PageHeader"
 import { Button } from "@/components/ui/elements/button/Button"
 import { formatDate } from "@/lib/utils"
-import { JobStatus } from "@/lib/validations/job"
 
-interface JobPageProps {
-  params: {
-    id: string
-  }
+interface Props {
+  params: { id: string };
 }
 
-export default async function JobPage({ params }: JobPageProps) {
+export default async function JobPage({ params }: Props) {
   const session = await auth()
 
   if (!session) {
@@ -50,7 +47,7 @@ export default async function JobPage({ params }: JobPageProps) {
   // Format status for display
   const statusDisplay = job.status
     .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ')
 
   return (
@@ -103,7 +100,7 @@ export default async function JobPage({ params }: JobPageProps) {
           <h2 className="text-lg font-semibold">Assigned Workers</h2>
           {job.assignments.length > 0 ? (
             <ul className="list-disc pl-5">
-              {job.assignments.map((assignment) => (
+              {job.assignments.map((assignment: { id: string; worker: { name: string } }) => (
                 <li key={assignment.id}>{assignment.worker.name}</li>
               ))}
             </ul>

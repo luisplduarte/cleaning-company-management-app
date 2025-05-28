@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Job, Worker } from '@prisma/client';
 import { startOfWeek, endOfWeek, addWeeks, subWeeks, format } from 'date-fns';
 import { isSameDay, differenceInMinutes, startOfDay } from 'date-fns';
@@ -91,7 +91,7 @@ const Calendar = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchJobs = async () => {
+  const fetchJobs = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -111,26 +111,22 @@ const Calendar = () => {
       setError('Failed to load calendar events');
       setIsLoading(false);
     }
-  };
+  }, [currentDate]);
 
   useEffect(() => {
     fetchJobs();
-  }, [currentDate]);
+  }, [fetchJobs]);
 
   const getEventStyle = (job: ExtendedJob) => {
-    // Parse dates and adjust for timezone
-    // Create dates in local timezone
     const start = new Date(job.start_date);
     const end = new Date(job.end_date);
     const dayStart = startOfDay(start);
     
-    // Calculate position and size
-    const topMinutes = differenceInMinutes(start, dayStart) - (5 * 60); // Subtract 5 hours (start at 5 AM)
+    const topMinutes = differenceInMinutes(start, dayStart) - (5 * 60);
     const duration = differenceInMinutes(end, start);
     
-    // Each hour slot is 64px (h-16 = 4rem = 64px)
-    const top = Math.max(0, (topMinutes * 64) / 60); // Convert minutes to pixels, ensure not negative
-    const height = (duration * 64) / 60; // Convert duration to pixels
+    const top = Math.max(0, (topMinutes * 64) / 60);
+    const height = (duration * 64) / 60;
     
     return {
       top: `${top}px`,
@@ -151,7 +147,7 @@ const Calendar = () => {
   );
 
   if (error) {
-    return <CalendarError message={error} onRetry={() => fetchJobs()} />;
+    return <CalendarError message={error} onRetry={fetchJobs} />;
   }
 
   if (isLoading) {
@@ -182,7 +178,7 @@ const Calendar = () => {
                   {format(day, 'd')}
                 </div>
               </div>
-              <div className="relative" style={{ height: 'calc(19 * 4rem)' }}>  {/* 19 slots * 4rem (h-16) */}
+              <div className="relative" style={{ height: 'calc(19 * 4rem)' }}>
                 <div className="absolute inset-0">
                   {Array.from({ length: 19 }, (_, i) => (
                     <div

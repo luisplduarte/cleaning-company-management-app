@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/elements/button/Button";
 import { JobsTable } from "@/components/jobs/JobsTable";
 import { JobType, JobStatus } from "@/lib/validations/job";
 
+interface Props {
+  params: { id: string };
+}
+
 async function getClient(id: string) {
   const client = await prisma.client.findUnique({
     where: { id },
@@ -51,11 +55,7 @@ async function getClient(id: string) {
   };
 }
 
-export default async function ClientPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default async function ClientPage({ params }: Props) {
   const session = await auth();
 
   if (!session) {
