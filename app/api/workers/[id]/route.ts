@@ -21,10 +21,9 @@ export async function GET(
       return new Response("Worker not found", { status: 404 });
     }
 
+    // Transform rate history dates for serialization
     const serializedWorker = {
       ...worker,
-      created_at: worker.created_at.toISOString(),
-      updated_at: worker.updated_at.toISOString(),
       rate_history: worker.rate_history.map(history => ({
         ...history,
         changed_at: history.changed_at.toISOString(),
@@ -83,10 +82,9 @@ export async function PUT(
       return updatedWorker;
     });
 
+    // Transform rate history dates for serialization
     const serializedWorker = {
       ...worker,
-      created_at: worker.created_at.toISOString(),
-      updated_at: worker.updated_at.toISOString(),
       rate_history: worker.rate_history.map(history => ({
         ...history,
         changed_at: history.changed_at.toISOString(),
