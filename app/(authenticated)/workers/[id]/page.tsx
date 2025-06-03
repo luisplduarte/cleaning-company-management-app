@@ -9,8 +9,9 @@ interface WorkerPageProps {
 }
 
 export default async function WorkerPage({ params }: WorkerPageProps) {
+  const { id } = await params;
   const worker = await prisma.worker.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       assignments: {
         include: {

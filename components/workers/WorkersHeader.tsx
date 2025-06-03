@@ -7,7 +7,11 @@ export function WorkersHeader() {
       title="Workers"
       description="Manage your company's workers"
     >
-      <Button href="/workers/new" size="sm">
+      <Button 
+        href="/workers/new" 
+        size="sm"
+        data-testid="create-worker-button"
+      >
         Create Worker
       </Button>
     </PageHeader>
