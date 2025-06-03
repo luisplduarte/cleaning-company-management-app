@@ -3,6 +3,21 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
+  // Create test user for cypress tests
+  const testUser = await prisma.user.upsert({
+    where: {
+      email: 'test@example.com',
+    },
+    update: {},
+    create: {
+      name: 'Test User',
+      email: 'test@example.com',
+      role: 'ADMIN',
+    },
+  })
+
+  console.log('Seeded test user:', testUser)
+
   // Create default Company Profit Margin rate if it doesn't exist
   const profitMarginRate = await prisma.rate.upsert({
     where: {

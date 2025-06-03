@@ -98,6 +98,7 @@ export function ClientForm({ initialData, clientId, mode }: ClientFormProps) {
       >
         <Input
           {...form.register("name")}
+          name="name"
           placeholder="Enter client name"
           disabled={isSubmitting}
         />
@@ -111,6 +112,7 @@ export function ClientForm({ initialData, clientId, mode }: ClientFormProps) {
       >
         <Input
           {...form.register("email")}
+          name="email"
           type="email"
           placeholder="Enter client email"
           disabled={isSubmitting}
@@ -125,6 +127,7 @@ export function ClientForm({ initialData, clientId, mode }: ClientFormProps) {
       >
         <Input
           {...form.register("phone")}
+          name="phone"
           type="tel"
           placeholder="Enter client phone number"
           disabled={isSubmitting}
@@ -139,6 +142,7 @@ export function ClientForm({ initialData, clientId, mode }: ClientFormProps) {
       >
         <Input
           {...form.register("country")}
+          name="country"
           placeholder="Enter country"
           disabled={isSubmitting}
         />
@@ -152,6 +156,7 @@ export function ClientForm({ initialData, clientId, mode }: ClientFormProps) {
       >
         <Input
           {...form.register("town")}
+          name="town"
           placeholder="Enter town"
           disabled={isSubmitting}
         />
@@ -165,6 +170,7 @@ export function ClientForm({ initialData, clientId, mode }: ClientFormProps) {
       >
         <Input
           {...form.register("zipCode")}
+          name="zipCode"
           placeholder="Enter ZIP code"
           disabled={isSubmitting}
         />
