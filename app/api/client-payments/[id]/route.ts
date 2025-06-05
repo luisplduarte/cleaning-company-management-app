@@ -5,15 +5,16 @@ import { ZodError } from "zod";
 
 export async function PATCH(
   request: Request,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json();
     const validatedData = updatePaymentStatusSchema.parse(body);
+    const params = await context.params;
 
     const payment = await prisma.clientPayment.update({
       where: {
-        id: context.params.id,
+        id: params.id,
       },
       data: {
         status: validatedData.status,
