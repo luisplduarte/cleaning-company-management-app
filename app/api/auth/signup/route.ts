@@ -29,6 +29,19 @@ export async function POST(req: Request) {
     })
 
     if (authError) {
+      // Handle specific Supabase auth errors
+      if (authError.message.includes("email rate limit") || authError.message.includes("over_email_send_rate_limit")) {
+        return Response.json(
+          { error: "Too many signup attempts. Please try again later." },
+          { status: 429 }
+        )
+      }
+      if (authError.message.includes("already registered") || authError.message.includes("already exists")) {
+        return Response.json(
+          { error: "An account with this email already exists" },
+          { status: 400 }
+        )
+      }
       throw authError
     }
 
@@ -49,6 +62,26 @@ export async function POST(req: Request) {
     return Response.json({ success: true })
   } catch (error) {
     console.error("Signup error:", error)
+    
+    // Handle Prisma unique constraint errors
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
+      return Response.json(
+        { error: "An account with this email already exists" },
+        { status: 400 }
+      )
+    }
+    
+    // Handle Zod validation errors
+    if (error && typeof error === 'object' && 'issues' in error) {
+      const zodError = error as { issues: Array<{ message: string }> }
+      const firstIssue = zodError.issues[0]
+      if (firstIssue?.message) {
+        return Response.json(
+          { error: firstIssue.message },
+          { status: 400 }
+        )
+      }
+    }
     
     if (error instanceof Error) {
       return Response.json(
