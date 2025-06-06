@@ -113,12 +113,13 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false }: JobFo
         error={errors.title?.message}
         required
       >
-        <Input
-          {...register("title")}
-          id="title"
-          placeholder="Enter job title"
-          error={!!errors.title}
-        />
+<Input
+  {...register("title")}
+  id="title"
+  name="title"
+  placeholder="Enter job title"
+  error={!!errors.title}
+/>
       </FormField>
 
       <FormField
@@ -127,12 +128,13 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false }: JobFo
         error={errors.description?.message}
         required
       >
-        <Textarea
-          {...register("description")}
-          id="description"
-          placeholder="Enter job description"
-          error={!!errors.description}
-        />
+<Textarea
+  {...register("description")}
+  id="description"
+  name="description"
+  placeholder="Enter job description"
+  error={!!errors.description}
+/>
       </FormField>
 
       <FormField
@@ -141,12 +143,13 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false }: JobFo
         error={errors.location?.message}
         required
       >
-        <Input
-          {...register("location")}
-          id="location"
-          placeholder="Enter job location"
-          error={!!errors.location}
-        />
+<Input
+  {...register("location")}
+  id="location"
+  name="location"
+  placeholder="Enter job location"
+  error={!!errors.location}
+/>
       </FormField>
 
       <FormField
@@ -155,13 +158,14 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false }: JobFo
         error={errors.type?.message}
         required
       >
-        <Select
-          {...register("type")}
-          options={typeOptions}
-          id="type"
-          placeholder="Select job type"
-          error={!!errors.type}
-        />
+<Select
+  {...register("type")}
+  options={typeOptions}
+  id="type"
+  name="type"
+  placeholder="Select job type"
+  error={!!errors.type}
+/>
       </FormField>
 
       <FormField
@@ -170,13 +174,14 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false }: JobFo
         error={errors.status?.message}
         required
       >
-        <Select
-          {...register("status")}
-          options={statusOptions}
-          id="status"
-          placeholder="Select job status"
-          error={!!errors.status}
-        />
+<Select
+  {...register("status")}
+  options={statusOptions}
+  id="status"
+  name="status"
+  placeholder="Select job status"
+  error={!!errors.status}
+/>
       </FormField>
 
       <div className="grid gap-6 sm:grid-cols-2">
@@ -186,11 +191,12 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false }: JobFo
           error={errors.start_date?.message}
           required
         >
-          <DatePicker
-            {...register("start_date")}
-            id="start_date"
-            error={!!errors.start_date}
-          />
+<DatePicker
+  {...register("start_date")}
+  id="start_date"
+  name="start_date"
+  error={!!errors.start_date}
+/>
         </FormField>
 
         <FormField
@@ -199,11 +205,12 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false }: JobFo
           error={errors.end_date?.message}
           required
         >
-          <DatePicker
-            {...register("end_date")}
-            id="end_date"
-            error={!!errors.end_date}
-          />
+<DatePicker
+  {...register("end_date")}
+  id="end_date"
+  name="end_date"
+  error={!!errors.end_date}
+/>
         </FormField>
       </div>
 
@@ -219,14 +226,15 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false }: JobFo
             error={errors.clientId?.message}
             required
           >
-            <Select
-              {...register("clientId")}
-              options={clientOptions}
-              id="clientId"
-              placeholder="Select client..."
-              error={!!errors.clientId}
-              disabled={isLoading}
-            />
+<Select
+  {...register("clientId")}
+  options={clientOptions}
+  id="clientId"
+  name="clientId"
+  placeholder="Select client..."
+  error={!!errors.clientId}
+  disabled={isLoading}
+/>
           </FormField>
 
           <FormField
@@ -235,14 +243,15 @@ export function JobForm({ defaultValues, onSubmit, isSubmitting = false }: JobFo
             error={errors.workerId?.message}
             required
           >
-            <Select
-              {...register("workerId")}
-              options={workerOptions}
-              id="workerId"
-              placeholder="Select worker..."
-              error={!!errors.workerId}
-              disabled={isLoading}
-            />
+<Select
+  {...register("workerId")}
+  options={workerOptions}
+  id="workerId"
+  name="workerId"
+  placeholder="Select worker..."
+  error={!!errors.workerId}
+  disabled={isLoading}
+/>
           </FormField>
         </>
       )}

@@ -13,7 +13,7 @@ export function JobsHeader({ title, description }: JobsHeaderProps) {
     <div className="flex justify-between items-start">
       <PageHeader title={title} description={description} />
       <Link href="/jobs/new">
-        <Button>
+        <Button data-testid="create-job-button">
           <FiPlus className="mr-2 h-4 w-4" />
           New Job
         </Button>
