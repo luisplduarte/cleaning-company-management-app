@@ -15,6 +15,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       login(email: string, password: string): void;
+      logout(): void;
     }
   }
 }
@@ -50,6 +51,28 @@ Cypress.Commands.add('login', (email: string, password: string): void => {
       throw new Error('Login failed');
     }
   });
+});
+
+Cypress.Commands.add('logout', (): void => {
+  // Set up interception before clicking logout
+  cy.intercept('POST', '/api/auth/signout*').as('signout');
+  cy.intercept('GET', '/auth/signin*').as('redirectToSignin');
+  
+  // Click the sign out button using test id for reliability
+  cy.get('[data-testid="logout-button"]').should('be.visible').click();
+  
+  // Wait for either the signout request OR the redirect (NextAuth might handle logout differently)
+  cy.window().then(() => {
+    // Check if we can catch the signout request
+    cy.get('body').then(() => {
+      // Try to wait for signout request, but don't fail if it doesn't happen
+      // (NextAuth might handle logout client-side)
+      cy.wait(1000); // Give time for potential request
+    });
+  });
+  
+  // Wait for redirect to signin page (more reliable indicator of logout)
+  cy.url({ timeout: 15000 }).should('include', '/auth/signin');
 });
 
 export {};

@@ -90,6 +90,7 @@ export function Navbar() {
             <button
               onClick={() => signOut({ callbackUrl: "/auth/signin" })}
               className="bg-red-600 text-white px-6 py-2 rounded-md font-medium hover:bg-red-700 transform hover:-translate-y-0.5 transition-all duration-200 hover:shadow-md"
+              data-testid="logout-button"
             >
               Sign out
             </button>
